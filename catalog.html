@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Catalog — Custom Product Builder</title>
+  <link rel="stylesheet" href="styles/general.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #0f0f0f;
+      border-bottom: 1px solid #2a2a2a;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 2px;
+      color: #ff9900;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      color: #888;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: #ff9900; }
+
+    /* ── Main ── */
+    main {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 30px;
+    }
+
+    /* ── Search bar ── */
+    .search-wrap {
+      position: relative;
+      margin-bottom: 30px;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 16px 20px 16px 50px;
+      color: #f0f0f0;
+      font-size: 16px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-wrap input:focus {
+      border-color: #ff9900;
+      box-shadow: 0 0 0 3px rgba(255,153,0,0.1);
+    }
+
+    .search-wrap input::placeholder { color: #444; }
+
+    .search-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      pointer-events: none;
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #555;
+      font-size: 20px;
+      cursor: pointer;
+      display: none;
+      transition: color 0.2s;
+    }
+
+    .search-clear:hover { color: #ff9900; }
+
+    /* ── Category filters ── */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .filter-btn {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      color: #888;
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      border-color: #ff9900;
+      color: #ff9900;
+    }
+
+    .filter-btn.active {
+      background: #ff9900;
+      border-color: #ff9900;
+      color: #000;
+    }
+
+    /* ── Results count ── */
+    .results-count {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Product grid ── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── Product card ── */
+    .product-card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      border-color: #ff9900;
+      box-shadow: 0 8px 24px rgba(255,153,0,0.15);
+    }
+
+    .product-card.active {
+      border-color: #ff9900;
+      box-shadow: 0 0 0 2px #ff9900;
+    }
+
+    .card-image {
+      width: 100%;
+      height: 180px;
+      object-fit: contain;
+      background: #0f0f0f;
+      padding: 20px;
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .card-category {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #ff9900;
+      margin-bottom: 6px;
+    }
+
+    .card-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 1px;
+      color: #f0f0f0;
+      margin-bottom: 6px;
+    }
+
+    .card-description {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ff9900;
+    }
+
+    .btn-customize {
+      background: #ff9900;
+      color: #000;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-customize:hover { background: #ffb84d; }
+
+    /* ── No results ── */
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: #444;
+    }
+
+    .no-results p:first-child {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .no-results p:last-child {
+      font-size: 16px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header { padding: 16px 20px; }
+      main { padding: 0 16px; margin: 24px auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Product Catalog</h1>
+    <nav class="nav-links">
+      <a href="index.html">Builder</a>
+      <a href="catalog.html" class="active">Catalog</a>
+      <a href="order-history.html">Orders</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- Search bar -->
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Search products...">
+      <button class="search-clear" id="search-clear">✕</button>
+    </div>
+
+    <!-- Category filter buttons -->
+    <div class="filter-bar" id="filter-bar">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Results count -->
+    <p class="results-count" id="results-count"></p>
+
+    <!-- Product grid -->
+    <div class="product-grid" id="product-grid">
+      <!-- Populated by JS -->
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { products, categories } from './scripts/products.js';
+
+    const searchInput  = document.getElementById('search-input');
+    const searchClear  = document.getElementById('search-clear');
+    const filterBar    = document.getElementById('filter-bar');
+    const productGrid  = document.getElementById('product-grid');
+    const resultsCount = document.getElementById('results-count');
+
+    let activeCategory = 'all';
+    let searchQuery    = '';
+
+    // ── Build category filter buttons ──
+    categories.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-btn' + (cat === 'all' ? ' active' : '');
+      btn.textContent = cat === 'all' ? 'All Products' : capitalize(cat);
+      btn.dataset.category = cat;
+      btn.addEventListener('click', () => {
+        activeCategory = cat;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderProducts();
+      });
+      filterBar.appendChild(btn);
+    });
+
+    // ── Render products ──
+    function renderProducts() {
+      const query = searchQuery.toLowerCase().trim();
+
+      const filtered = Object.entries(products).filter(([key, product]) => {
+        const matchesCategory = activeCategory === 'all' || product.category === activeCategory;
+        const matchesSearch   = !query ||
+          product.label.toLowerCase().includes(query) ||
+          product.category.toLowerCase().includes(query) ||
+          product.description.toLowerCase().includes(query);
+        return matchesCategory && matchesSearch;
+      });
+
+      // Results count
+      resultsCount.textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''} found`;
+
+      // No results
+      if (filtered.length === 0) {
+        productGrid.innerHTML = `
+          <div class="no-results">
+            <p>🔍</p>
+            <p>No products found for "<strong>${query}</strong>"</p>
+          </div>`;
+        return;
+      }
+
+      // Render cards
+      productGrid.innerHTML = filtered.map(([key, product]) => `
+        <div class="product-card" data-key="${key}">
+          <img class="card-image" src="${product.image}" alt="${product.label}">
+          <div class="card-body">
+            <div class="card-category">${product.category}</div>
+            <div class="card-name">${product.label}</div>
+            <div class="card-description">${product.description}</div>
+            <div class="card-footer">
+              <span class="card-price">$${product.price.toFixed(2)}</span>
+              <button class="btn-customize" data-key="${key}">Customize →</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Click card or button → go to builder with product pre-selected
+      productGrid.querySelectorAll('.btn-customize').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const key = btn.dataset.key;
+          window.location.href = `index.html?product=${key}`;
+        });
+      });
+
+      productGrid.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const key = card.dataset.key;
+          window.location.href = `index.html?product=${key}`;
+        });
+      });
+    }
+
+    // ── Search input ──
+    searchInput.addEventListener('input', () => {
+      searchQuery = searchInput.value;
+      searchClear.style.display = searchQuery ? 'block' : 'none';
+      renderProducts();
+    });
+
+    // ── Clear search ──
+    searchClear.addEventListener('click', () => {
+      searchInput.value = '';
+      searchQuery = '';
+      searchClear.style.display = 'none';
+      searchInput.focus();
+      renderProducts();
+    });
+
+    // ── Helper ──
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    // ── Init ──
+    renderProducts();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order History — Custom Product Builder</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #0f0f0f;
+      border-bottom: 1px solid #2a2a2a;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 2px;
+      color: #ff9900;
+    }
+
+    .nav-links { display: flex; gap: 24px; }
+
+    .nav-links a {
+      color: #888;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: #ff9900; }
+
+    /* ── Main ── */
+    main {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 30px;
+    }
+
+    /* ── Top bar ── */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .top-bar h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 2px;
+      color: #f0f0f0;
+    }
+
+    .top-bar span {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .btn-clear-history {
+      background: none;
+      border: 1px solid #e53e3e;
+      color: #e53e3e;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-clear-history:hover {
+      background: #e53e3e;
+      color: #fff;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #444;
+    }
+
+    .empty-state .empty-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 2px;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .empty-state p {
+      font-size: 15px;
+      color: #444;
+      margin-bottom: 28px;
+    }
+
+    .btn-shop {
+      display: inline-block;
+      background: #ff9900;
+      color: #000;
+      text-decoration: none;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+
+    .btn-shop:hover { background: #ffb84d; }
+
+    /* ── Order card ── */
+    .order-card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .order-card:hover { border-color: #3a3a3a; }
+
+    /* ── Order header ── */
+    .order-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid #2a2a2a;
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .order-header:hover { background: #1f1f1f; }
+
+    .order-meta { display: flex; gap: 32px; align-items: center; }
+
+    .order-id {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 1px;
+      color: #ff9900;
+    }
+
+    .order-date {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .order-date span {
+      color: #888;
+      font-weight: 600;
+    }
+
+    .order-header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* ── Status badge ── */
+    .status-badge {
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .status-pending  { background: rgba(255,153,0,0.15);  color: #ff9900; }
+    .status-shipped  { background: rgba(66,153,225,0.15); color: #63b3ed; }
+    .status-delivered{ background: rgba(72,187,120,0.15); color: #68d391; }
+
+    .order-total-preview {
+      font-weight: 700;
+      font-size: 16px;
+      color: #f0f0f0;
+    }
+
+    .toggle-icon {
+      color: #555;
+      font-size: 18px;
+      transition: transform 0.3s;
+    }
+
+    .order-card.expanded .toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    /* ── Order body ── */
+    .order-body {
+      display: none;
+      padding: 20px 24px;
+    }
+
+    .order-card.expanded .order-body {
+      display: block;
+      animation: slideDown 0.25s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Customer info ── */
+    .customer-info {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #2a2a2a;
+      flex-wrap: wrap;
+    }
+
+    .info-block label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 4px;
+    }
+
+    .info-block p {
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    /* ── Order items ── */
+    .order-items-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 12px;
+    }
+
+    .order-item-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid #222;
+    }
+
+    .order-item-row:last-of-type { border-bottom: none; }
+
+    .order-item-row img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      background: #0f0f0f;
+      border-radius: 8px;
+      padding: 6px;
+      border: 1px solid #2a2a2a;
+      flex-shrink: 0;
+    }
+
+    .order-item-info { flex: 1; }
+
+    .order-item-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #f0f0f0;
+    }
+
+    .order-item-variant {
+      font-size: 12px;
+      color: #666;
+      text-transform: capitalize;
+      margin-top: 2px;
+    }
+
+    .order-item-qty {
+      font-size: 12px;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    .order-item-price {
+      font-weight: 700;
+      font-size: 14px;
+      color: #ff9900;
+    }
+
+    /* ── Order totals ── */
+    .order-totals {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #2a2a2a;
+    }
+
+    .totals-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .totals-row.discount { color: #68d391; }
+
+    .totals-row.grand {
+      font-size: 17px;
+      font-weight: 700;
+      color: #f0f0f0;
+      margin-top: 6px;
+      padding-top: 10px;
+      border-top: 1px solid #2a2a2a;
+    }
+
+    .totals-row.grand span:last-child { color: #ff9900; }
+
+    /* ── Reorder button ── */
+    .btn-reorder {
+      display: inline-block;
+      margin-top: 16px;
+      background: none;
+      border: 1px solid #ff9900;
+      color: #ff9900;
+      padding: 9px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-reorder:hover {
+      background: #ff9900;
+      color: #000;
+    }
+
+    /* ── Confirm clear modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show { display: flex; }
+
+    .modal-box {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 36px;
+      text-align: center;
+      max-width: 360px;
+      width: 90%;
+    }
+
+    .modal-box h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 2px;
+      color: #f0f0f0;
+      margin-bottom: 12px;
+    }
+
+    .modal-box p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .modal-buttons { display: flex; gap: 12px; justify-content: center; }
+
+    .btn-cancel-modal {
+      background: none;
+      border: 1px solid #333;
+      color: #888;
+      padding: 10px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel-modal:hover { border-color: #555; color: #ccc; }
+
+    .btn-confirm-clear {
+      background: #e53e3e;
+      border: none;
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      transition: background 0.2s;
+    }
+
+    .btn-confirm-clear:hover { background: #c53030; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header { padding: 16px 20px; flex-direction: column; gap: 12px; }
+      main { padding: 0 16px; margin: 24px auto; }
+      .order-meta { gap: 16px; flex-wrap: wrap; }
+      .customer-info { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <h1>Order History</h1>
+    <nav class="nav-links">
+      <a href="index.html">Builder</a>
+      <a href="catalog.html">Catalog</a>
+      <a href="order-history.html" class="active">Orders</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- Top bar -->
+    <div class="top-bar">
+      <div>
+        <h2>Your Orders</h2>
+        <span id="order-count-label"></span>
+      </div>
+      <button class="btn-clear-history" id="btn-clear-history">🗑 Clear History</button>
+    </div>
+
+    <!-- Orders list -->
+    <div id="orders-list"></div>
+
+  </main>
+
+  <!-- Confirm clear modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box">
+      <h3>Clear History?</h3>
+      <p>This will permanently delete all your order history. This action cannot be undone.</p>
+      <div class="modal-buttons">
+        <button class="btn-cancel-modal" id="btn-cancel-modal">Cancel</button>
+        <button class="btn-confirm-clear" id="btn-confirm-clear">Yes, Clear All</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { products } from './scripts/products.js';
+
+    const ordersList      = document.getElementById('orders-list');
+    const orderCountLabel = document.getElementById('order-count-label');
+    const modalOverlay    = document.getElementById('modal-overlay');
+
+    // ── Delivery status helper (based on order age) ──
+    function getStatus(orderId) {
+      const ageMs  = Date.now() - orderId;
+      const ageMin = ageMs / 60000;
+      if (ageMin < 2)  return { label: 'Pending',   cls: 'status-pending'   };
+      if (ageMin < 10) return { label: 'Shipped',   cls: 'status-shipped'   };
+      return               { label: 'Delivered', cls: 'status-delivered' };
+    }
+
+    // ── Format date ──
+    function formatDate(id) {
+      const d = new Date(id);
+      return d.toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      }) + ' at ' + d.toLocaleTimeString('en-US', {
+        hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    // ── Render all orders ──
+    function renderOrders() {
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+      if (orders.length === 0) {
+        orderCountLabel.textContent = '';
+        ordersList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <h3>No Orders Yet</h3>
+            <p>You haven't placed any orders yet.<br>Go build something awesome!</p>
+            <a href="index.html" class="btn-shop">Start Building →</a>
+          </div>`;
+        return;
+      }
+
+      // Show newest first
+      const sorted = [...orders].reverse();
+      orderCountLabel.textContent = `${orders.length} order${orders.length !== 1 ? 's' : ''} total`;
+
+      ordersList.innerHTML = sorted.map((order, index) => {
+        const status = getStatus(order.id);
+
+        // Build items HTML
+        const itemsHTML = order.items.map(item => {
+          const entry = Object.entries(products)
+            .find(([, p]) => p.id === item.productId);
+          if (!entry) return '';
+          const [, product] = entry;
+          const itemTotal = product.price * item.quantity;
+          return `
+            <div class="order-item-row">
+              <img src="${product.image}" alt="${product.label}">
+              <div class="order-item-info">
+                <div class="order-item-name">${product.label.toUpperCase()}</div>
+                <div class="order-item-variant">${item.color} / ${item.size}</div>
+                <div class="order-item-qty">Qty: ${item.quantity}</div>
+              </div>
+              <div class="order-item-price">$${itemTotal.toFixed(2)}</div>
+            </div>`;
+        }).join('');
+
+        // Discount row
+        const discountHTML = order.discount > 0 ? `
+          <div class="totals-row discount">
+            <span>Discount Applied</span>
+            <span>-$${order.discount.toFixed(2)}</span>
+          </div>` : '';
+
+        return `
+          <div class="order-card" id="order-card-${index}">
+
+            <!-- Clickable header -->
+            <div class="order-header" onclick="toggleOrder(${index})">
+              <div class="order-meta">
+                <span class="order-id">Order #${String(order.id).slice(-6)}</span>
+                <span class="order-date">📅 <span>${formatDate(order.id)}</span></span>
+                <span class="status-badge ${status.cls}">${status.label}</span>
+              </div>
+              <div class="order-header-right">
+                <span class="order-total-preview">$${order.total.toFixed(2)}</span>
+                <span class="toggle-icon">▼</span>
+              </div>
+            </div>
+
+            <!-- Expandable body -->
+            <div class="order-body">
+
+              <!-- Customer info -->
+              <div class="customer-info">
+                <div class="info-block">
+                  <label>Customer</label>
+                  <p>${order.name || '—'}</p>
+                </div>
+                <div class="info-block">
+                  <label>Email</label>
+                  <p>${order.email || '—'}</p>
+                </div>
+                <div class="info-block">
+                  <label>Items</label>
+                  <p>${order.items.reduce((sum, i) => sum + i.quantity, 0)} item(s)</p>
+                </div>
+              </div>
+
+              <!-- Items -->
+              <p class="order-items-title">Items Ordered</p>
+              ${itemsHTML}
+
+              <!-- Totals -->
+              <div class="order-totals">
+                <div class="totals-row">
+                  <span>Subtotal</span>
+                  <span>$${order.subtotal.toFixed(2)}</span>
+                </div>
+                ${discountHTML}
+                <div class="totals-row">
+                  <span>Shipping</span>
+                  <span>Free</span>
+                </div>
+                <div class="totals-row grand">
+                  <span>Total Paid</span>
+                  <span>$${order.total.toFixed(2)}</span>
+                </div>
+              </div>
+
+              <!-- Reorder -->
+              <a href="index.html" class="btn-reorder">🔄 Build Again</a>
+
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // ── Toggle expand/collapse ──
+    window.toggleOrder = function(index) {
+      const card = document.getElementById(`order-card-${index}`);
+      card.classList.toggle('expanded');
+    };
+
+    // ── Clear history ──
+    document.getElementById('btn-clear-history').addEventListener('click', () => {
+      modalOverlay.classList.add('show');
+    });
+
+    document.getElementById('btn-cancel-modal').addEventListener('click', () => {
+      modalOverlay.classList.remove('show');
+    });
+
+    document.getElementById('btn-confirm-clear').addEventListener('click', () => {
+      localStorage.removeItem('orders');
+      modalOverlay.classList.remove('show');
+      renderOrders();
+    });
+
+    // ── Init ──
+    renderOrders();
+  </script>
+
+</body>
+</html>

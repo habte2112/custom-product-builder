@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Custom Product Builder</title>
+  <link rel="stylesheet" href="styles/general.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: #0f0f0f;
+      color: #f0f0f0;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #0f0f0f;
+      border-bottom: 1px solid #2a2a2a;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 2px;
+      color: #ff9900;
+    }
+
+    .back-link {
+      color: #ff9900;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: #ffb84d; }
+
+    /* ── Main layout ── */
+    main {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 30px;
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 30px;
+    }
+
+    /* ── Panel ── */
+    .panel {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 32px;
+    }
+
+    .panel h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 2px;
+      color: #ff9900;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    /* ── Form ── */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group.full { grid-column: 1 / -1; }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: #0f0f0f;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #f0f0f0;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .form-group input:focus {
+      border-color: #ff9900;
+      box-shadow: 0 0 0 3px rgba(255,153,0,0.15);
+    }
+
+    .form-group input::placeholder { color: #444; }
+
+    .form-section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 1.5px;
+      color: #ccc;
+      margin: 24px 0 16px;
+    }
+
+    .card-icons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .card-icon {
+      background: #0f0f0f;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 13px;
+      color: #888;
+      font-weight: 600;
+    }
+
+    /* ── Place order button ── */
+    .btn-order {
+      width: 100%;
+      background: #ff9900;
+      color: #000;
+      border: none;
+      padding: 16px;
+      border-radius: 10px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-order:hover { background: #ffb84d; transform: translateY(-2px); }
+    .btn-order:active { transform: translateY(0); }
+
+    /* ── Order Summary ── */
+    .order-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .order-item img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      background: #0f0f0f;
+      border-radius: 8px;
+      padding: 6px;
+      border: 1px solid #2a2a2a;
+    }
+
+    .order-item-info { flex: 1; }
+    .order-item-name { font-weight: 600; font-size: 15px; color: #f0f0f0; }
+    .order-item-variant { font-size: 13px; color: #666; margin-top: 3px; text-transform: capitalize; }
+    .order-item-qty { font-size: 13px; color: #888; margin-top: 3px; }
+    .order-item-price { font-weight: 700; font-size: 15px; color: #ff9900; }
+
+    /* ── Promo Code ── */
+    .promo-section {
+      margin: 20px 0;
+      padding: 20px;
+      background: #0f0f0f;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+    }
+
+    .promo-section label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 10px;
+    }
+
+    .promo-input-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .promo-input-row input {
+      flex: 1;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #f0f0f0;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .promo-input-row input:focus {
+      border-color: #ff9900;
+    }
+
+    .btn-apply-promo {
+      background: #ff9900;
+      color: #000;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-apply-promo:hover { background: #ffb84d; }
+
+    .promo-message {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      min-height: 20px;
+      transition: all 0.2s;
+    }
+
+    .promo-message.success { color: #48bb78; }
+    .promo-message.error   { color: #fc8181; }
+
+    /* ── Totals ── */
+    .order-totals {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #2a2a2a;
+    }
+
+    .order-totals .row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+    }
+
+    .order-totals .discount-row {
+      color: #48bb78;
+      font-weight: 600;
+    }
+
+    .order-totals .grand-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 20px;
+      font-weight: 700;
+      color: #f0f0f0;
+      margin-top: 6px;
+      padding-top: 10px;
+      border-top: 1px solid #2a2a2a;
+    }
+
+    .order-totals .grand-total span { color: #ff9900; }
+
+    .empty-cart-msg {
+      text-align: center;
+      color: #555;
+      padding: 40px 0;
+      font-size: 16px;
+    }
+
+    /* ── Success Overlay ── */
+    .success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success-overlay.show {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .success-box {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 20px;
+      padding: 50px 40px;
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      animation: slideUp 0.4s ease;
+    }
+
+    .success-icon { font-size: 60px; margin-bottom: 20px; }
+
+    .success-box h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      letter-spacing: 2px;
+      color: #ff9900;
+      margin-bottom: 12px;
+    }
+
+    .success-box p {
+      color: #888;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .success-savings {
+      color: #48bb78;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+
+    .btn-continue {
+      display: inline-block;
+      background: #ff9900;
+      color: #000;
+      text-decoration: none;
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 2px;
+      transition: background 0.2s;
+    }
+
+    .btn-continue:hover { background: #ffb84d; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    @media (max-width: 768px) {
+      main { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Checkout</h1>
+    <a href="index.html" class="back-link">← Back to Builder</a>
+  </header>
+
+  <main>
+
+    <!-- LEFT: Checkout Form -->
+    <div class="panel">
+      <h2>Your Details</h2>
+
+      <p class="form-section-title">Personal Info</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="first-name">First Name</label>
+          <input type="text" id="first-name" placeholder="John">
+        </div>
+        <div class="form-group">
+          <label for="last-name">Last Name</label>
+          <input type="text" id="last-name" placeholder="Doe">
+        </div>
+        <div class="form-group full">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="john@example.com">
+        </div>
+      </div>
+
+      <p class="form-section-title">Shipping Address</p>
+      <div class="form-row">
+        <div class="form-group full">
+          <label for="address">Street Address</label>
+          <input type="text" id="address" placeholder="123 Main Street">
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city" placeholder="New York">
+        </div>
+        <div class="form-group">
+          <label for="zip">ZIP Code</label>
+          <input type="text" id="zip" placeholder="10001">
+        </div>
+        <div class="form-group full">
+          <label for="country">Country</label>
+          <input type="text" id="country" placeholder="United States">
+        </div>
+      </div>
+
+      <p class="form-section-title">Payment Details</p>
+      <div class="card-icons">
+        <span class="card-icon">VISA</span>
+        <span class="card-icon">MC</span>
+        <span class="card-icon">AMEX</span>
+      </div>
+      <div class="form-row">
+        <div class="form-group full">
+          <label for="card-number">Card Number</label>
+          <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+        </div>
+        <div class="form-group">
+          <label for="expiry">Expiry Date</label>
+          <input type="text" id="expiry" placeholder="MM / YY" maxlength="7">
+        </div>
+        <div class="form-group">
+          <label for="cvv">CVV</label>
+          <input type="text" id="cvv" placeholder="123" maxlength="3">
+        </div>
+      </div>
+
+      <button class="btn-order" id="place-order-btn">Place Order</button>
+    </div>
+
+    <!-- RIGHT: Order Summary -->
+    <div class="panel">
+      <h2>Order Summary</h2>
+
+      <div id="order-items"></div>
+
+      <!-- ✅ NEW: Promo Code Section -->
+      <div class="promo-section" id="promo-section" style="display:none;">
+        <label for="promo-input">🎟️ Promo Code</label>
+        <div class="promo-input-row">
+          <input type="text" id="promo-input" placeholder="E.G. SAVE10">
+          <button class="btn-apply-promo" id="apply-promo-btn">Apply</button>
+        </div>
+        <div class="promo-message" id="promo-message"></div>
+      </div>
+
+      <!-- Totals -->
+      <div class="order-totals" id="order-totals" style="display:none;">
+        <div class="row">
+          <span>Subtotal</span>
+          <span id="subtotal-val">$0.00</span>
+        </div>
+        <div class="row discount-row" id="discount-row" style="display:none;">
+          <span id="discount-label">Discount</span>
+          <span id="discount-val">-$0.00</span>
+        </div>
+        <div class="row">
+          <span>Shipping</span>
+          <span>Free</span>
+        </div>
+        <div class="grand-total">
+          <span>Total</span>
+          <span id="total-val">$0.00</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Success Overlay -->
+  <div class="success-overlay" id="success-overlay">
+    <div class="success-box">
+      <div class="success-icon">🎉</div>
+      <h2>Order Placed!</h2>
+      <p>Thank you! A confirmation will be sent to<br><strong id="confirm-email"></strong></p>
+      <p class="success-savings" id="success-savings" style="display:none;"></p>
+      <a href="index.html" class="btn-continue">Continue Shopping</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { products } from './scripts/products.js';
+    import { applyPromoCode } from './scripts/promo.js';
+
+    // ── Render order summary ──
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const orderItemsEl   = document.getElementById('order-items');
+    const orderTotalsEl  = document.getElementById('order-totals');
+    const promoSectionEl = document.getElementById('promo-section');
+    const subtotalEl     = document.getElementById('subtotal-val');
+    const totalEl        = document.getElementById('total-val');
+    const discountRow    = document.getElementById('discount-row');
+    const discountLabel  = document.getElementById('discount-label');
+    const discountVal    = document.getElementById('discount-val');
+
+    let subtotal = 0;
+    let appliedDiscount = 0;
+
+    if (cart.length === 0) {
+      orderItemsEl.innerHTML = '<p class="empty-cart-msg">🛒 Your cart is empty.<br><a href="index.html" style="color:#ff9900;">Go build something!</a></p>';
+    } else {
+      cart.forEach(item => {
+        const entry = Object.entries(products)
+          .find(([, p]) => p.id === item.productId);
+        if (!entry) return;
+
+        const [name, product] = entry;
+        const itemTotal = product.price * item.quantity;
+        subtotal += itemTotal;
+
+        orderItemsEl.innerHTML += `
+          <div class="order-item">
+            <img src="${product.image}" alt="${name}">
+            <div class="order-item-info">
+              <div class="order-item-name">${product.label.toUpperCase()}</div>
+              <div class="order-item-variant">${item.color} / ${item.size}</div>
+              <div class="order-item-qty">Qty: ${item.quantity}</div>
+            </div>
+            <div class="order-item-price">$${itemTotal.toFixed(2)}</div>
+          </div>
+        `;
+      });
+
+      subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+      totalEl.textContent    = `$${subtotal.toFixed(2)}`;
+      orderTotalsEl.style.display  = 'block';
+      promoSectionEl.style.display = 'block';
+    }
+
+    // ── Update totals display ──
+    function updateTotals() {
+      const finalTotal = Math.max(0, subtotal - appliedDiscount);
+      totalEl.textContent = `$${finalTotal.toFixed(2)}`;
+    }
+
+    // ── Apply promo code ──
+    document.getElementById('apply-promo-btn').addEventListener('click', () => {
+      const code = document.getElementById('promo-input').value;
+      const msgEl = document.getElementById('promo-message');
+
+      if (!code.trim()) {
+        msgEl.textContent = '⚠️ Please enter a promo code.';
+        msgEl.className = 'promo-message error';
+        return;
+      }
+
+      const result = applyPromoCode(code, subtotal);
+      msgEl.textContent = result.message;
+
+      if (result.valid) {
+        msgEl.className = 'promo-message success';
+        appliedDiscount = result.discount;
+
+        // Show discount row
+        discountRow.style.display = 'flex';
+        discountLabel.textContent = `Promo (${code.toUpperCase()})`;
+        discountVal.textContent   = `-$${appliedDiscount.toFixed(2)}`;
+
+        // Disable input after applying
+        document.getElementById('promo-input').disabled = true;
+        document.getElementById('apply-promo-btn').disabled = true;
+        document.getElementById('apply-promo-btn').textContent = 'Applied ✓';
+        document.getElementById('apply-promo-btn').style.background = '#48bb78';
+      } else {
+        msgEl.className = 'promo-message error';
+        appliedDiscount = 0;
+        discountRow.style.display = 'none';
+      }
+
+      updateTotals();
+    });
+
+    // ── Allow pressing Enter on promo input ──
+    document.getElementById('promo-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('apply-promo-btn').click();
+    });
+
+    // ── Card number formatting ──
+    document.getElementById('card-number').addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '').substring(0, 16);
+      e.target.value = val.replace(/(.{4})/g, '$1 ').trim();
+    });
+
+    // ── Expiry formatting ──
+    document.getElementById('expiry').addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '').substring(0, 4);
+      if (val.length >= 3) val = val.substring(0, 2) + ' / ' + val.substring(2);
+      e.target.value = val;
+    });
+
+    // ── Place order ──
+    document.getElementById('place-order-btn').addEventListener('click', () => {
+      const fields = ['first-name','last-name','email','address','city','zip','country','card-number','expiry','cvv'];
+      let valid = true;
+
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) {
+          el.style.borderColor = '#e53e3e';
+          valid = false;
+        } else {
+          el.style.borderColor = '#333';
+        }
+      });
+
+      if (!valid || cart.length === 0) return;
+
+      // Save order to localStorage for order history
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+      orders.push({
+        id: Date.now(),
+        date: new Date().toLocaleDateString(),
+        items: cart,
+        subtotal: subtotal,
+        discount: appliedDiscount,
+        total: Math.max(0, subtotal - appliedDiscount),
+        email: document.getElementById('email').value,
+        name: `${document.getElementById('first-name').value} ${document.getElementById('last-name').value}`
+      });
+      localStorage.setItem('orders', JSON.stringify(orders));
+
+      // Show success
+      document.getElementById('confirm-email').textContent = document.getElementById('email').value;
+
+      if (appliedDiscount > 0) {
+        const savingsEl = document.getElementById('success-savings');
+        savingsEl.textContent = `🎉 You saved $${appliedDiscount.toFixed(2)} with your promo code!`;
+        savingsEl.style.display = 'block';
+      }
+
+      document.getElementById('success-overlay').classList.add('show');
+
+      // Clear cart
+      localStorage.removeItem('cart');
+    });
+  </script>
+
+</body>
+</html>

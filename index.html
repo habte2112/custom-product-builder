@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Product Builder</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f0f2f5;
+      color: #333;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #232f3e;
+      color: white;
+      padding: 16px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      letter-spacing: 2px;
+      color: #ff9900;
+    }
+
+    .nav-links { display: flex; gap: 24px; }
+
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: #ff9900; }
+
+    /* ── Floating cart ── */
+    .floating-cart {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #000;
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 999;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    #cart-count {
+      background: red;
+      color: white;
+      padding: 2px 7px;
+      border-radius: 50%;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    .cart-bounce { animation: bounce 0.3s; }
+
+    @keyframes bounce {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+
+    /* ── Main grid ── */
+    .builder-page {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      padding: 30px;
+      max-width: 1300px;
+      margin: auto;
+    }
+
+    /* ── Panels ── */
+    .product-options,
+    .live-preview,
+    .cart-section {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .product-options h2,
+    .live-preview h2,
+    .cart-section h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 1.5px;
+      color: #232f3e;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    /* ── Option groups ── */
+    .option-group { margin-bottom: 16px; }
+
+    .option-group > label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #888;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    /* ── Search ── */
+    .search-wrap-builder { position: relative; }
+
+    .search-wrap-builder input {
+      width: 100%;
+      padding: 9px 32px 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-wrap-builder input:focus {
+      border-color: #ff9900;
+      box-shadow: 0 0 0 3px rgba(255,153,0,0.12);
+    }
+
+    .search-wrap-builder input::placeholder { color: #bbb; }
+
+    .search-clear-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #aaa;
+      font-size: 14px;
+      display: none;
+    }
+
+    .search-clear-btn:hover { color: #ff9900; }
+
+    /* ── Filter pills ── */
+    .filter-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .pill {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      color: #666;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: capitalize;
+      transition: all 0.15s;
+    }
+
+    .pill:hover { border-color: #ff9900; color: #ff9900; }
+    .pill.active { background: #ff9900; border-color: #ff9900; color: #fff; }
+
+    /* ── Dropdowns ── */
+    select {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    select:focus { border-color: #ff9900; }
+
+    .no-results-msg {
+      color: #e53e3e;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    /* ── Checkboxes ── */
+    .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+
+    .checkbox-group div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #ff9900;
+      cursor: pointer;
+    }
+
+    /* ── Add to cart button ── */
+    .button-primary {
+      width: 100%;
+      background: #ff9900;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 10px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s, transform 0.15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .button-primary:hover { background: #e68a00; transform: translateY(-1px); }
+    .button-primary.added { background: #38a169; transform: scale(1.03); }
+
+    /* ── Live preview ── */
+    .product-preview { text-align: center; }
+
+    #preview-image {
+      width: 100%;
+      max-width: 280px;
+      height: 260px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: #f8f8f8;
+      padding: 16px;
+      border: 1px solid #eee;
+    }
+
+    #preview-description {
+      margin-top: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    #preview-price {
+      margin-top: 8px;
+      font-size: 28px;
+      color: #b12704;
+      font-weight: 700;
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    /* ── Cart items ── */
+    .cart-items { margin-top: 4px; }
+
+    .cart-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .cart-item img {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: #f8f8f8;
+      padding: 4px;
+      border: 1px solid #eee;
+      flex-shrink: 0;
+    }
+
+    .cart-item-name { font-weight: 700; font-size: 13px; color: #232f3e; }
+
+    .cart-item-variant {
+      font-size: 12px;
+      color: #999;
+      text-transform: capitalize;
+      margin: 2px 0 6px;
+    }
+
+    .cart-item-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .cart-item-controls button {
+      background: #f0f0f0;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+      line-height: 1;
+      transition: background 0.15s;
+    }
+
+    .cart-item-controls button:hover { background: #ddd; }
+
+    .cart-item-controls span {
+      font-weight: 600;
+      font-size: 14px;
+      min-width: 16px;
+      text-align: center;
+    }
+
+    .cart-item-price {
+      font-weight: 700;
+      color: #b12704;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #e53e3e;
+      cursor: pointer;
+      font-size: 12px;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    .remove-btn:hover { color: #c00; }
+
+    .empty-cart {
+      text-align: center;
+      font-size: 15px;
+      padding: 30px;
+      color: #bbb;
+    }
+
+    /* ── Cart summary ── */
+    .cart-summary {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 2px solid #f0f0f0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .cart-summary p { margin-bottom: 6px; }
+    .cart-summary span { font-weight: 700; color: #232f3e; }
+
+    /* ── Checkout button ── */
+    .btn-checkout {
+      display: block;
+      width: 100%;
+      background: #232f3e;
+      color: #fff;
+      text-align: center;
+      padding: 13px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      margin-top: 14px;
+      transition: background 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-checkout:hover { background: #ff9900; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .builder-page { grid-template-columns: 1fr 1fr; }
+      .cart-section { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 600px) {
+      .builder-page { grid-template-columns: 1fr; padding: 16px; }
+      header { flex-direction: column; gap: 12px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Cart -->
+  <div class="floating-cart">
+    🛒 Cart <span id="cart-count">0</span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <h1>Build Your Custom Product</h1>
+    <nav class="nav-links">
+      <a href="index.html" class="active">Builder</a>
+      <a href="catalog.html">Catalog</a>
+      <a href="order-history.html">Orders</a>
+    </nav>
+  </header>
+
+  <main class="builder-page">
+
+    <!-- 1️⃣ Product Options -->
+    <section class="product-options">
+      <h2>Choose Your Options</h2>
+
+      <!-- Search -->
+      <div class="option-group">
+        <label>Search:</label>
+        <div class="search-wrap-builder">
+          <input type="text" id="product-search" placeholder="Search products...">
+          <button id="search-clear-builder" class="search-clear-btn">✕</button>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="option-group">
+        <label>Category:</label>
+        <div class="filter-pills" id="filter-pills">
+          <!-- Populated by builder.js -->
+        </div>
+      </div>
+
+      <!-- Product Dropdown -->
+      <div class="option-group">
+        <label for="product-select">Product:</label>
+        <select id="product-select">
+          <!-- Auto-populated by builder.js -->
+        </select>
+        <p class="no-results-msg" id="no-results-msg" style="display:none;">
+          No products found.
+        </p>
+      </div>
+
+      <!-- Color -->
+      <div class="option-group">
+        <label for="color-select">Color:</label>
+        <select id="color-select">
+          <option value="red">Red</option>
+          <option value="blue">Blue</option>
+          <option value="black">Black</option>
+          <option value="white">White</option>
+          <option value="green">Green</option>
+        </select>
+      </div>
+
+      <!-- Size -->
+      <div class="option-group">
+        <label for="size-select">Size:</label>
+        <select id="size-select">
+          <option value="small">Small</option>
+          <option value="medium">Medium</option>
+          <option value="large">Large</option>
+          <option value="xl">XL</option>
+        </select>
+      </div>
+
+      <!-- Accessories -->
+      <div class="option-group">
+        <label>Accessories:</label>
+        <div class="checkbox-group">
+          <div>
+            <input type="checkbox" id="accessory1" value="keychain">
+            <label for="accessory1">Keychain (+$5)</label>
+          </div>
+          <div>
+            <input type="checkbox" id="accessory2" value="sticker">
+            <label for="accessory2">Sticker (+$2)</label>
+          </div>
+        </div>
+      </div>
+
+      <button id="add-to-cart-btn" class="button-primary">Add to Cart</button>
+    </section>
+
+    <!-- 2️⃣ Live Preview -->
+    <section class="live-preview">
+      <h2>Live Preview</h2>
+      <div class="product-preview">
+        <img id="preview-image" src="images/products/backpack.jpg" alt="Product Preview">
+        <div id="preview-description">Backpack — Red — Small</div>
+        <div id="preview-price">$50.00</div>
+      </div>
+    </section>
+
+    <!-- 3️⃣ Cart -->
+    <section class="cart-section">
+      <h2>Your Cart</h2>
+
+      <div class="cart-items js-cart-items">
+        <!-- Populated by builder.js -->
+      </div>
+
+      <div class="cart-summary">
+        <p>Total Items: <span id="total-items">0</span></p>
+        <p>Total Price: $<span id="total-price">0.00</span></p>
+      </div>
+
+      <a href="checkout.html" class="btn-checkout">Proceed to Checkout →</a>
+    </section>
+
+  </main>
+
+  <script type="module" src="scripts/builder.js"></script>
+</body>
+</html>

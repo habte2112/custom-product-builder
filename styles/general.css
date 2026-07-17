@@ -1,0 +1,22 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+}
+
+header {
+  background-color: #232f3e;
+  color: white;
+  padding: 16px 30px;
+  font-size: 20px;
+}
+
+h1, h2 {
+  margin-bottom: 15px;
+}
