@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout — Custom Product Builder</title>
-  <link rel="stylesheet" href="styles/general.css">
+
+  <!-- Stripe.js — must load before your script -->
+  <script src="https://js.stripe.com/v3/"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
 
@@ -12,7 +15,7 @@
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background-color: #0f0f0f;
+      background: #0f0f0f;
       color: #f0f0f0;
       min-height: 100vh;
     }
@@ -34,8 +37,10 @@
       color: #ff9900;
     }
 
-    .back-link {
-      color: #ff9900;
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+
+    .nav-links a {
+      color: #888;
       text-decoration: none;
       font-size: 14px;
       font-weight: 600;
@@ -43,12 +48,24 @@
       text-transform: uppercase;
       transition: color 0.2s;
     }
-    .back-link:hover { color: #ffb84d; }
 
-    /* ── Main layout ── */
+    .nav-links a:hover { color: #ff9900; }
+
+    .user-badge {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    .user-badge span { color: #ff9900; font-weight: 600; }
+
+    /* ── Main ── */
     main {
       display: grid;
-      grid-template-columns: 1fr 420px;
+      grid-template-columns: 1fr 400px;
       gap: 30px;
       max-width: 1100px;
       margin: 40px auto;
@@ -65,7 +82,7 @@
 
     .panel h2 {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 26px;
+      font-size: 24px;
       letter-spacing: 2px;
       color: #ff9900;
       margin-bottom: 24px;
@@ -74,23 +91,27 @@
     }
 
     /* ── Form ── */
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
+    .form-section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 17px;
+      letter-spacing: 1.5px;
+      color: #ccc;
+      margin: 22px 0 14px;
     }
 
-    .form-group { margin-bottom: 18px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    .form-group { margin-bottom: 14px; }
     .form-group.full { grid-column: 1 / -1; }
 
     .form-group label {
       display: block;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       letter-spacing: 1px;
       text-transform: uppercase;
-      color: #888;
-      margin-bottom: 8px;
+      color: #666;
+      margin-bottom: 7px;
     }
 
     .form-group input {
@@ -98,44 +119,93 @@
       background: #0f0f0f;
       border: 1px solid #333;
       border-radius: 8px;
-      padding: 12px 14px;
+      padding: 11px 13px;
       color: #f0f0f0;
-      font-size: 15px;
+      font-size: 14px;
       font-family: 'DM Sans', sans-serif;
-      transition: border-color 0.2s, box-shadow 0.2s;
       outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .form-group input:focus {
       border-color: #ff9900;
-      box-shadow: 0 0 0 3px rgba(255,153,0,0.15);
+      box-shadow: 0 0 0 3px rgba(255,153,0,0.12);
     }
 
     .form-group input::placeholder { color: #444; }
+    .form-group input.invalid { border-color: #e53e3e; }
 
-    .form-section-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 18px;
-      letter-spacing: 1.5px;
-      color: #ccc;
-      margin: 24px 0 16px;
+    /* ── Stripe card element ── */
+    .stripe-field {
+      background: #0f0f0f;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 12px 13px;
+      transition: border-color 0.2s;
     }
 
-    .card-icons {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
+    .stripe-field.focused { border-color: #ff9900; }
+
+    .card-icons { display: flex; gap: 8px; margin-bottom: 12px; }
 
     .card-icon {
       background: #0f0f0f;
       border: 1px solid #333;
-      border-radius: 6px;
-      padding: 6px 10px;
-      font-size: 13px;
-      color: #888;
-      font-weight: 600;
+      border-radius: 5px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #777;
+      font-weight: 700;
     }
+
+    /* ── Promo code ── */
+    .promo-wrap {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .promo-wrap input {
+      flex: 1;
+      background: #0f0f0f;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 10px 13px;
+      color: #f0f0f0;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+      text-transform: uppercase;
+    }
+
+    .promo-wrap input:focus { border-color: #ff9900; }
+
+    .btn-apply-promo {
+      background: #2a2a2a;
+      border: 1px solid #333;
+      color: #ccc;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-apply-promo:hover { border-color: #ff9900; color: #ff9900; }
+    .btn-apply-promo:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .promo-msg {
+      font-size: 13px;
+      margin-top: 6px;
+      min-height: 18px;
+    }
+
+    .promo-msg.success { color: #68d391; }
+    .promo-msg.error   { color: #fc8181; }
 
     /* ── Place order button ── */
     .btn-order {
@@ -149,162 +219,118 @@
       font-size: 22px;
       letter-spacing: 2px;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 20px;
       transition: background 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     .btn-order:hover { background: #ffb84d; transform: translateY(-2px); }
-    .btn-order:active { transform: translateY(0); }
+    .btn-order:disabled { background: #555; color: #888; cursor: not-allowed; transform: none; }
 
-    /* ── Order Summary ── */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 3px solid rgba(0,0,0,0.2);
+      border-top-color: #000;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Payment error ── */
+    .payment-error {
+      background: rgba(229,62,62,0.1);
+      border: 1px solid rgba(229,62,62,0.3);
+      color: #fc8181;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    /* ── Order summary ── */
     .order-item {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 14px 0;
-      border-bottom: 1px solid #2a2a2a;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #222;
     }
 
+    .order-item:last-of-type { border-bottom: none; }
+
     .order-item img {
-      width: 60px;
-      height: 60px;
+      width: 56px;
+      height: 56px;
       object-fit: contain;
       background: #0f0f0f;
       border-radius: 8px;
       padding: 6px;
       border: 1px solid #2a2a2a;
+      flex-shrink: 0;
     }
 
     .order-item-info { flex: 1; }
-    .order-item-name { font-weight: 600; font-size: 15px; color: #f0f0f0; }
-    .order-item-variant { font-size: 13px; color: #666; margin-top: 3px; text-transform: capitalize; }
-    .order-item-qty { font-size: 13px; color: #888; margin-top: 3px; }
-    .order-item-price { font-weight: 700; font-size: 15px; color: #ff9900; }
-
-    /* ── Promo Code ── */
-    .promo-section {
-      margin: 20px 0;
-      padding: 20px;
-      background: #0f0f0f;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-    }
-
-    .promo-section label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: #888;
-      margin-bottom: 10px;
-    }
-
-    .promo-input-row {
-      display: flex;
-      gap: 10px;
-    }
-
-    .promo-input-row input {
-      flex: 1;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 8px;
-      padding: 10px 14px;
-      color: #f0f0f0;
-      font-size: 14px;
-      font-family: 'DM Sans', sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .promo-input-row input:focus {
-      border-color: #ff9900;
-    }
-
-    .btn-apply-promo {
-      background: #ff9900;
-      color: #000;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.2s;
-      white-space: nowrap;
-    }
-
-    .btn-apply-promo:hover { background: #ffb84d; }
-
-    .promo-message {
-      margin-top: 10px;
-      font-size: 13px;
-      font-weight: 500;
-      min-height: 20px;
-      transition: all 0.2s;
-    }
-
-    .promo-message.success { color: #48bb78; }
-    .promo-message.error   { color: #fc8181; }
+    .order-item-name { font-weight: 600; font-size: 14px; }
+    .order-item-variant { font-size: 12px; color: #666; margin-top: 2px; text-transform: capitalize; }
+    .order-item-qty { font-size: 12px; color: #555; margin-top: 2px; }
+    .order-item-price { font-weight: 700; color: #ff9900; font-size: 14px; }
 
     /* ── Totals ── */
     .order-totals {
-      margin-top: 20px;
-      padding-top: 16px;
+      margin-top: 18px;
+      padding-top: 14px;
       border-top: 1px solid #2a2a2a;
     }
 
-    .order-totals .row {
+    .totals-row {
       display: flex;
       justify-content: space-between;
       font-size: 14px;
-      color: #888;
-      margin-bottom: 10px;
+      color: #666;
+      margin-bottom: 8px;
     }
 
-    .order-totals .discount-row {
-      color: #48bb78;
-      font-weight: 600;
-    }
+    .totals-row.discount { color: #68d391; }
 
-    .order-totals .grand-total {
-      display: flex;
-      justify-content: space-between;
+    .totals-row.grand {
       font-size: 20px;
       font-weight: 700;
       color: #f0f0f0;
-      margin-top: 6px;
+      margin-top: 8px;
       padding-top: 10px;
       border-top: 1px solid #2a2a2a;
     }
 
-    .order-totals .grand-total span { color: #ff9900; }
+    .totals-row.grand span:last-child { color: #ff9900; }
 
+    /* ── Empty cart ── */
     .empty-cart-msg {
       text-align: center;
       color: #555;
       padding: 40px 0;
-      font-size: 16px;
     }
 
-    /* ── Success Overlay ── */
+    .empty-cart-msg a { color: #ff9900; }
+
+    /* ── Success overlay ── */
     .success-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.9);
       z-index: 999;
       align-items: center;
       justify-content: center;
     }
 
-    .success-overlay.show {
-      display: flex;
-      animation: fadeIn 0.3s ease;
-    }
+    .success-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
 
     .success-box {
       background: #1a1a1a;
@@ -327,52 +353,75 @@
       margin-bottom: 12px;
     }
 
-    .success-box p {
-      color: #888;
-      font-size: 15px;
-      line-height: 1.6;
-      margin-bottom: 10px;
-    }
+    .success-box p { color: #888; font-size: 15px; line-height: 1.6; margin-bottom: 28px; }
 
-    .success-savings {
-      color: #48bb78;
-      font-weight: 700;
-      font-size: 16px;
-      margin-bottom: 24px;
-    }
+    .success-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
     .btn-continue {
       display: inline-block;
       background: #ff9900;
       color: #000;
       text-decoration: none;
-      padding: 14px 32px;
+      padding: 13px 28px;
       border-radius: 10px;
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 20px;
-      letter-spacing: 2px;
+      font-size: 18px;
+      letter-spacing: 1px;
       transition: background 0.2s;
     }
 
     .btn-continue:hover { background: #ffb84d; }
 
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideUp {
-      from { transform: translateY(40px); opacity: 0; }
-      to   { transform: translateY(0);    opacity: 1; }
+    .btn-view-orders {
+      display: inline-block;
+      background: none;
+      border: 1px solid #ff9900;
+      color: #ff9900;
+      text-decoration: none;
+      padding: 13px 28px;
+      border-radius: 10px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 1px;
+      transition: all 0.2s;
     }
 
+    .btn-view-orders:hover { background: #ff9900; color: #000; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* ── Not logged in warning ── */
+    .login-warning {
+      background: rgba(255,153,0,0.1);
+      border: 1px solid rgba(255,153,0,0.3);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: #ffb84d;
+      margin-bottom: 20px;
+    }
+
+    .login-warning a { color: #ff9900; font-weight: 700; }
+
+    /* ── Responsive ── */
     @media (max-width: 768px) {
       main { grid-template-columns: 1fr; }
       .form-row { grid-template-columns: 1fr; }
+      header { padding: 16px 20px; flex-wrap: wrap; gap: 12px; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Header -->
   <header>
     <h1>Checkout</h1>
-    <a href="index.html" class="back-link">← Back to Builder</a>
+    <nav class="nav-links">
+      <a href="index.html">← Builder</a>
+      <a href="order-history.html">My Orders</a>
+      <div class="user-badge" id="user-badge">Loading...</div>
+    </nav>
   </header>
 
   <main>
@@ -381,100 +430,88 @@
     <div class="panel">
       <h2>Your Details</h2>
 
+      <!-- Login warning (shown if not logged in) -->
+      <div class="login-warning" id="login-warning" style="display:none;">
+        ⚠️ You need to <a href="login.html">log in</a> before placing an order.
+      </div>
+
+      <!-- Personal Info -->
       <p class="form-section-title">Personal Info</p>
       <div class="form-row">
         <div class="form-group">
-          <label for="first-name">First Name</label>
+          <label>First Name</label>
           <input type="text" id="first-name" placeholder="John">
         </div>
         <div class="form-group">
-          <label for="last-name">Last Name</label>
+          <label>Last Name</label>
           <input type="text" id="last-name" placeholder="Doe">
         </div>
         <div class="form-group full">
-          <label for="email">Email Address</label>
+          <label>Email Address</label>
           <input type="email" id="email" placeholder="john@example.com">
         </div>
       </div>
 
+      <!-- Shipping -->
       <p class="form-section-title">Shipping Address</p>
       <div class="form-row">
         <div class="form-group full">
-          <label for="address">Street Address</label>
+          <label>Street Address</label>
           <input type="text" id="address" placeholder="123 Main Street">
         </div>
         <div class="form-group">
-          <label for="city">City</label>
+          <label>City</label>
           <input type="text" id="city" placeholder="New York">
         </div>
         <div class="form-group">
-          <label for="zip">ZIP Code</label>
+          <label>ZIP Code</label>
           <input type="text" id="zip" placeholder="10001">
         </div>
         <div class="form-group full">
-          <label for="country">Country</label>
+          <label>Country</label>
           <input type="text" id="country" placeholder="United States">
         </div>
       </div>
 
-      <p class="form-section-title">Payment Details</p>
+      <!-- Promo Code -->
+      <p class="form-section-title">Promo Code</p>
+      <div class="promo-wrap">
+        <input type="text" id="promo-input" placeholder="Enter code e.g. SAVE10">
+        <button class="btn-apply-promo" id="apply-promo-btn">Apply</button>
+      </div>
+      <div class="promo-msg" id="promo-msg"></div>
+
+      <!-- Payment -->
+      <p class="form-section-title">Payment</p>
       <div class="card-icons">
         <span class="card-icon">VISA</span>
         <span class="card-icon">MC</span>
         <span class="card-icon">AMEX</span>
       </div>
-      <div class="form-row">
-        <div class="form-group full">
-          <label for="card-number">Card Number</label>
-          <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
-        </div>
-        <div class="form-group">
-          <label for="expiry">Expiry Date</label>
-          <input type="text" id="expiry" placeholder="MM / YY" maxlength="7">
-        </div>
-        <div class="form-group">
-          <label for="cvv">CVV</label>
-          <input type="text" id="cvv" placeholder="123" maxlength="3">
-        </div>
-      </div>
 
-      <button class="btn-order" id="place-order-btn">Place Order</button>
+      <!-- Stripe Card Element mounts here -->
+      <div class="stripe-field" id="stripe-card-element"></div>
+
+      <div class="payment-error" id="payment-error"></div>
+
+      <button class="btn-order" id="place-order-btn">
+        <div class="spinner" id="spinner"></div>
+        <span id="btn-label">Place Order</span>
+      </button>
     </div>
 
     <!-- RIGHT: Order Summary -->
     <div class="panel">
       <h2>Order Summary</h2>
-
       <div id="order-items"></div>
-
-      <!-- ✅ NEW: Promo Code Section -->
-      <div class="promo-section" id="promo-section" style="display:none;">
-        <label for="promo-input">🎟️ Promo Code</label>
-        <div class="promo-input-row">
-          <input type="text" id="promo-input" placeholder="E.G. SAVE10">
-          <button class="btn-apply-promo" id="apply-promo-btn">Apply</button>
-        </div>
-        <div class="promo-message" id="promo-message"></div>
-      </div>
-
-      <!-- Totals -->
       <div class="order-totals" id="order-totals" style="display:none;">
-        <div class="row">
-          <span>Subtotal</span>
-          <span id="subtotal-val">$0.00</span>
+        <div class="totals-row"><span>Subtotal</span><span id="subtotal-val">$0.00</span></div>
+        <div class="totals-row discount" id="discount-row" style="display:none;">
+          <span>Discount (<span id="promo-code-label"></span>)</span>
+          <span id="discount-val"></span>
         </div>
-        <div class="row discount-row" id="discount-row" style="display:none;">
-          <span id="discount-label">Discount</span>
-          <span id="discount-val">-$0.00</span>
-        </div>
-        <div class="row">
-          <span>Shipping</span>
-          <span>Free</span>
-        </div>
-        <div class="grand-total">
-          <span>Total</span>
-          <span id="total-val">$0.00</span>
-        </div>
+        <div class="totals-row"><span>Shipping</span><span>Free</span></div>
+        <div class="totals-row grand"><span>Total</span><span id="total-val">$0.00</span></div>
       </div>
     </div>
 
@@ -485,166 +522,259 @@
     <div class="success-box">
       <div class="success-icon">🎉</div>
       <h2>Order Placed!</h2>
-      <p>Thank you! A confirmation will be sent to<br><strong id="confirm-email"></strong></p>
-      <p class="success-savings" id="success-savings" style="display:none;"></p>
-      <a href="index.html" class="btn-continue">Continue Shopping</a>
+      <p id="success-msg">
+        Your order has been placed and a confirmation email is on its way!
+      </p>
+      <div class="success-actions">
+        <a href="index.html" class="btn-continue">Keep Shopping</a>
+        <a href="order-history.html" class="btn-view-orders">View Orders</a>
+      </div>
     </div>
   </div>
 
   <script type="module">
     import { products } from './scripts/products.js';
-    import { applyPromoCode } from './scripts/promo.js';
+    import { isLoggedIn, getUser, logout, saveAuth } from './scripts/api.js';
+    import { ordersAPI, paymentAPI } from './scripts/api.js';
 
-    // ── Render order summary ──
+    // ── Auth check ──
+    const user = getUser();
+    const userBadge    = document.getElementById('user-badge');
+    const loginWarning = document.getElementById('login-warning');
+
+    if (!isLoggedIn()) {
+      userBadge.innerHTML = `<a href="login.html" style="color:#ff9900;">Login</a>`;
+      loginWarning.style.display = 'block';
+      document.getElementById('place-order-btn').disabled = true;
+    } else {
+      userBadge.innerHTML = `👤 <span>${user.name}</span>
+        <a href="#" id="logout-link" style="color:#666;margin-left:10px;font-size:12px;">Logout</a>`;
+      document.getElementById('logout-link')?.addEventListener('click', (e) => {
+        e.preventDefault(); logout();
+      });
+      // Pre-fill email from account
+      document.getElementById('email').value = user.email;
+    }
+
+    // ── Setup Stripe ──
+    // Replace with your Stripe PUBLISHABLE key from dashboard.stripe.com
+    const STRIPE_PUBLISHABLE_KEY = 'pk_test_51TywT52K3zm6E0KTelxFY51UpaKgl7osnnPxWjuAlpd5Ns1UiKHGgJwCCCbstW6XNlY9vXzfjZ0yz1YMBBNZtFqA00fhl8UKeE';
+    const stripe  = Stripe(STRIPE_PUBLISHABLE_KEY);
+    const elements = stripe.elements();
+
+    const cardElement = elements.create('card', {
+      style: {
+        base: {
+          color: '#f0f0f0',
+          fontFamily: 'DM Sans, sans-serif',
+          fontSize: '15px',
+          '::placeholder': { color: '#444' }
+        },
+        invalid: { color: '#fc8181' }
+      }
+    });
+
+    cardElement.mount('#stripe-card-element');
+
+    cardElement.on('focus', () =>
+      document.getElementById('stripe-card-element').classList.add('focused'));
+    cardElement.on('blur', () =>
+      document.getElementById('stripe-card-element').classList.remove('focused'));
+
+    // ── Load cart & render order summary ──
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const orderItemsEl   = document.getElementById('order-items');
-    const orderTotalsEl  = document.getElementById('order-totals');
-    const promoSectionEl = document.getElementById('promo-section');
-    const subtotalEl     = document.getElementById('subtotal-val');
-    const totalEl        = document.getElementById('total-val');
-    const discountRow    = document.getElementById('discount-row');
-    const discountLabel  = document.getElementById('discount-label');
-    const discountVal    = document.getElementById('discount-val');
+    const orderItemsEl  = document.getElementById('order-items');
+    const orderTotalsEl = document.getElementById('order-totals');
+    const subtotalEl    = document.getElementById('subtotal-val');
+    const totalEl       = document.getElementById('total-val');
 
-    let subtotal = 0;
-    let appliedDiscount = 0;
+    let grandTotal  = 0;
+    let discount    = 0;
+    let appliedCode = null;
 
     if (cart.length === 0) {
-      orderItemsEl.innerHTML = '<p class="empty-cart-msg">🛒 Your cart is empty.<br><a href="index.html" style="color:#ff9900;">Go build something!</a></p>';
+      orderItemsEl.innerHTML = `
+        <div class="empty-cart-msg">
+          🛒 Your cart is empty.<br>
+          <a href="index.html">Go build something!</a>
+        </div>`;
+      document.getElementById('place-order-btn').disabled = true;
     } else {
       cart.forEach(item => {
         const entry = Object.entries(products)
           .find(([, p]) => p.id === item.productId);
         if (!entry) return;
-
         const [name, product] = entry;
-        const itemTotal = product.price * item.quantity;
-        subtotal += itemTotal;
+        const subtotal = product.price * item.quantity;
+        grandTotal += subtotal;
 
         orderItemsEl.innerHTML += `
           <div class="order-item">
-            <img src="${product.image}" alt="${name}">
+            <img src="${product.image}" alt="${product.label}">
             <div class="order-item-info">
               <div class="order-item-name">${product.label.toUpperCase()}</div>
               <div class="order-item-variant">${item.color} / ${item.size}</div>
               <div class="order-item-qty">Qty: ${item.quantity}</div>
             </div>
-            <div class="order-item-price">$${itemTotal.toFixed(2)}</div>
-          </div>
-        `;
+            <div class="order-item-price">$${subtotal.toFixed(2)}</div>
+          </div>`;
       });
 
-      subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-      totalEl.textContent    = `$${subtotal.toFixed(2)}`;
-      orderTotalsEl.style.display  = 'block';
-      promoSectionEl.style.display = 'block';
+      subtotalEl.textContent  = `$${grandTotal.toFixed(2)}`;
+      totalEl.textContent     = `$${grandTotal.toFixed(2)}`;
+      orderTotalsEl.style.display = 'block';
     }
 
-    // ── Update totals display ──
-    function updateTotals() {
-      const finalTotal = Math.max(0, subtotal - appliedDiscount);
-      totalEl.textContent = `$${finalTotal.toFixed(2)}`;
-    }
+    // ── Promo code ──
+    document.getElementById('apply-promo-btn').addEventListener('click', async () => {
+      const code = document.getElementById('promo-input').value.trim();
+      const msg  = document.getElementById('promo-msg');
+      if (!code) return;
 
-    // ── Apply promo code ──
-    document.getElementById('apply-promo-btn').addEventListener('click', () => {
-      const code = document.getElementById('promo-input').value;
-      const msgEl = document.getElementById('promo-message');
+      try {
+        const data = await ordersAPI.validatePromo(code, grandTotal);
+        if (data.valid) {
+          discount    = data.discount;
+          appliedCode = code.toUpperCase();
 
-      if (!code.trim()) {
-        msgEl.textContent = '⚠️ Please enter a promo code.';
-        msgEl.className = 'promo-message error';
-        return;
+          // Update totals display
+          const newTotal = Math.max(0, grandTotal - discount);
+          totalEl.textContent = `$${newTotal.toFixed(2)}`;
+
+          document.getElementById('discount-row').style.display = 'flex';
+          document.getElementById('promo-code-label').textContent = appliedCode;
+          document.getElementById('discount-val').textContent = `-$${discount.toFixed(2)}`;
+
+          msg.textContent  = data.message;
+          msg.className    = 'promo-msg success';
+
+          document.getElementById('apply-promo-btn').disabled    = true;
+          document.getElementById('apply-promo-btn').textContent = '✅ Applied';
+          document.getElementById('promo-input').disabled        = true;
+        }
+      } catch (err) {
+        discount    = 0;
+        appliedCode = null;
+        msg.textContent = err.message;
+        msg.className   = 'promo-msg error';
       }
-
-      const result = applyPromoCode(code, subtotal);
-      msgEl.textContent = result.message;
-
-      if (result.valid) {
-        msgEl.className = 'promo-message success';
-        appliedDiscount = result.discount;
-
-        // Show discount row
-        discountRow.style.display = 'flex';
-        discountLabel.textContent = `Promo (${code.toUpperCase()})`;
-        discountVal.textContent   = `-$${appliedDiscount.toFixed(2)}`;
-
-        // Disable input after applying
-        document.getElementById('promo-input').disabled = true;
-        document.getElementById('apply-promo-btn').disabled = true;
-        document.getElementById('apply-promo-btn').textContent = 'Applied ✓';
-        document.getElementById('apply-promo-btn').style.background = '#48bb78';
-      } else {
-        msgEl.className = 'promo-message error';
-        appliedDiscount = 0;
-        discountRow.style.display = 'none';
-      }
-
-      updateTotals();
     });
 
-    // ── Allow pressing Enter on promo input ──
+    // Enter key for promo
     document.getElementById('promo-input').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') document.getElementById('apply-promo-btn').click();
     });
 
-    // ── Card number formatting ──
-    document.getElementById('card-number').addEventListener('input', (e) => {
-      let val = e.target.value.replace(/\D/g, '').substring(0, 16);
-      e.target.value = val.replace(/(.{4})/g, '$1 ').trim();
-    });
-
-    // ── Expiry formatting ──
-    document.getElementById('expiry').addEventListener('input', (e) => {
-      let val = e.target.value.replace(/\D/g, '').substring(0, 4);
-      if (val.length >= 3) val = val.substring(0, 2) + ' / ' + val.substring(2);
-      e.target.value = val;
-    });
-
-    // ── Place order ──
-    document.getElementById('place-order-btn').addEventListener('click', () => {
-      const fields = ['first-name','last-name','email','address','city','zip','country','card-number','expiry','cvv'];
+    // ── Validate form fields ──
+    function validateFields() {
+      const fields = ['first-name', 'last-name', 'email', 'address', 'city', 'zip', 'country'];
       let valid = true;
-
       fields.forEach(id => {
         const el = document.getElementById(id);
         if (!el.value.trim()) {
-          el.style.borderColor = '#e53e3e';
+          el.classList.add('invalid');
           valid = false;
         } else {
-          el.style.borderColor = '#333';
+          el.classList.remove('invalid');
         }
       });
+      return valid;
+    }
 
-      if (!valid || cart.length === 0) return;
+    // Remove invalid on input
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', () => input.classList.remove('invalid'));
+    });
 
-      // Save order to localStorage for order history
-      const orders = JSON.parse(localStorage.getItem('orders')) || [];
-      orders.push({
-        id: Date.now(),
-        date: new Date().toLocaleDateString(),
-        items: cart,
-        subtotal: subtotal,
-        discount: appliedDiscount,
-        total: Math.max(0, subtotal - appliedDiscount),
-        email: document.getElementById('email').value,
-        name: `${document.getElementById('first-name').value} ${document.getElementById('last-name').value}`
-      });
-      localStorage.setItem('orders', JSON.stringify(orders));
-
-      // Show success
-      document.getElementById('confirm-email').textContent = document.getElementById('email').value;
-
-      if (appliedDiscount > 0) {
-        const savingsEl = document.getElementById('success-savings');
-        savingsEl.textContent = `🎉 You saved $${appliedDiscount.toFixed(2)} with your promo code!`;
-        savingsEl.style.display = 'block';
+    // ── Place order ──
+    document.getElementById('place-order-btn').addEventListener('click', async () => {
+      if (!isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
       }
 
-      document.getElementById('success-overlay').classList.add('show');
+      if (cart.length === 0) return;
+      if (!validateFields()) return;
 
-      // Clear cart
-      localStorage.removeItem('cart');
+      const btn     = document.getElementById('place-order-btn');
+      const spinner = document.getElementById('spinner');
+      const label   = document.getElementById('btn-label');
+      const errDiv  = document.getElementById('payment-error');
+
+      // Show loading
+      btn.disabled       = true;
+      spinner.style.display = 'block';
+      label.textContent  = 'Processing...';
+      errDiv.style.display = 'none';
+
+      const finalTotal = Math.max(0, grandTotal - discount);
+
+      try {
+        // 1. Create Stripe payment intent
+        const { clientSecret } = await paymentAPI.createIntent(finalTotal);
+
+        // 2. Confirm payment with Stripe
+        const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name:  `${document.getElementById('first-name').value} ${document.getElementById('last-name').value}`,
+              email: document.getElementById('email').value
+            }
+          }
+        });
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        // 3. Save order to MongoDB
+        const orderItems = cart.map(item => {
+          const entry = Object.entries(products)
+            .find(([, p]) => p.id === item.productId);
+          if (!entry) return null;
+          const [name, product] = entry;
+          return {
+            productId:   product.id,
+            productName: product.label,
+            image:       product.image,
+            color:       item.color,
+            size:        item.size,
+            quantity:    item.quantity,
+            price:       product.price
+          };
+        }).filter(Boolean);
+
+        await ordersAPI.create({
+          items:           orderItems,
+          subtotal:        grandTotal,
+          discount:        discount,
+          promoCode:       appliedCode,
+          total:           finalTotal,
+          stripePaymentId: paymentIntent.id,
+          shippingAddress: {
+            street:  document.getElementById('address').value,
+            city:    document.getElementById('city').value,
+            zip:     document.getElementById('zip').value,
+            country: document.getElementById('country').value
+          }
+        });
+
+        // 4. Clear cart and show success
+        localStorage.removeItem('cart');
+
+        document.getElementById('success-msg').textContent =
+          `Your order has been paid and confirmed! A confirmation email has been sent to ${document.getElementById('email').value}.`;
+
+        document.getElementById('success-overlay').classList.add('show');
+
+      } catch (err) {
+        errDiv.textContent   = `❌ ${err.message}`;
+        errDiv.style.display = 'block';
+        btn.disabled         = false;
+        spinner.style.display = 'none';
+        label.textContent    = 'Place Order';
+      }
     });
   </script>
 

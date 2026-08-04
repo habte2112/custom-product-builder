@@ -304,6 +304,10 @@
   </main>
 
   <script type="module">
+    import { setupNav } from './scripts/admin-nav.js';
+    setupNav();
+  </script>
+  <script type="module">
     import { products, categories } from './scripts/products.js';
 
     const searchInput  = document.getElementById('search-input');

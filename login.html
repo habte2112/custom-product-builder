@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Custom Product Builder</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #0f0f0f; color: #f0f0f0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 3px; color: #ff9900; margin-bottom: 32px; text-align: center; }
+    .logo span { display: block; font-family: 'DM Sans', sans-serif; font-size: 13px; letter-spacing: 2px; color: #555; margin-top: 4px; text-transform: uppercase; }
+    .card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 20px; padding: 36px; width: 100%; max-width: 420px; }
+    .tabs { display: flex; background: #0f0f0f; border-radius: 10px; padding: 4px; margin-bottom: 28px; }
+    .tab-btn { flex: 1; background: none; border: none; color: #555; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+    .tab-btn.active { background: #ff9900; color: #000; }
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+    h2 { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; color: #f0f0f0; margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #555; margin-bottom: 8px; }
+    .form-group input { width: 100%; background: #0f0f0f; border: 1px solid #333; border-radius: 8px; padding: 12px 14px; color: #f0f0f0; font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .form-group input:focus { border-color: #ff9900; box-shadow: 0 0 0 3px rgba(255,153,0,0.12); }
+    .form-group input::placeholder { color: #444; }
+    .btn-submit { width: 100%; background: #ff9900; color: #000; border: none; padding: 14px; border-radius: 10px; font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; cursor: pointer; margin-top: 8px; transition: background 0.2s, transform 0.15s; }
+    .btn-submit:hover { background: #ffb84d; transform: translateY(-1px); }
+    .btn-submit:disabled { background: #555; color: #888; cursor: not-allowed; transform: none; }
+    .message { padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-bottom: 16px; display: none; }
+    .message.error   { background: rgba(229,62,62,0.1);  border: 1px solid rgba(229,62,62,0.3);  color: #fc8181; display: block; }
+    .message.success { background: rgba(72,187,120,0.1); border: 1px solid rgba(72,187,120,0.3); color: #68d391;  display: block; }
+    .back-link { display: block; text-align: center; margin-top: 20px; color: #444; font-size: 13px; text-decoration: none; transition: color 0.2s; }
+    .back-link:hover { color: #ff9900; }
+    .redirect-badge {
+      display: inline-block;
+      background: rgba(255,153,0,0.1);
+      border: 1px solid rgba(255,153,0,0.3);
+      color: #ff9900;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo">
+    ⚙️ Product Builder
+    <span>Sign in to continue</span>
+  </div>
+
+  <div class="card">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-login">Login</button>
+      <button class="tab-btn" id="tab-register">Register</button>
+    </div>
+
+    <!-- Login Form -->
+    <div class="form-panel active" id="panel-login">
+      <h2>Welcome Back</h2>
+      <div class="message" id="login-message"></div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="login-email" placeholder="john@example.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="••••••••">
+      </div>
+      <button class="btn-submit" id="login-btn">Login</button>
+    </div>
+
+    <!-- Register Form -->
+    <div class="form-panel" id="panel-register">
+      <h2>Create Account</h2>
+      <div class="message" id="register-message"></div>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="register-name" placeholder="John Doe">
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="register-email" placeholder="john@example.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="register-password" placeholder="Min. 6 characters">
+      </div>
+      <button class="btn-submit" id="register-btn">Create Account</button>
+    </div>
+
+    <a href="index.html" class="back-link">← Back to Builder</a>
+  </div>
+
+  <script type="module">
+    import { auth, saveAuth, isLoggedIn, getUser } from './scripts/api.js';
+
+    // ── If already logged in, redirect based on role ──
+    if (isLoggedIn()) {
+      const user = getUser();
+      redirectByRole(user);
+    }
+
+    // ── Redirect helper — admin goes to admin.html, users go to index.html ──
+    function redirectByRole(user) {
+      if (user && user.role === 'admin') {
+        window.location.href = 'admin.html';
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+
+    // ── Show message helper ──
+    function showMessage(id, text, type) {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.className = `message ${type}`;
+    }
+
+    // ── Tab switching ──
+    const tabLogin    = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+    const panelLogin    = document.getElementById('panel-login');
+    const panelRegister = document.getElementById('panel-register');
+
+    tabLogin.addEventListener('click', () => {
+      tabLogin.classList.add('active');
+      tabRegister.classList.remove('active');
+      panelLogin.classList.add('active');
+      panelRegister.classList.remove('active');
+    });
+
+    tabRegister.addEventListener('click', () => {
+      tabRegister.classList.add('active');
+      tabLogin.classList.remove('active');
+      panelRegister.classList.add('active');
+      panelLogin.classList.remove('active');
+    });
+
+    // ── LOGIN ──
+    document.getElementById('login-btn').addEventListener('click', async () => {
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const btn      = document.getElementById('login-btn');
+
+      if (!email || !password) {
+        return showMessage('login-message', '⚠️ Please fill in all fields.', 'error');
+      }
+
+      btn.disabled    = true;
+      btn.textContent = 'Logging in...';
+
+      try {
+        const data = await auth.login(email, password);
+
+        // Save token and user info
+        saveAuth(data.token, data.user);
+
+        // ── ROLE-BASED REDIRECT ──
+        if (data.user.role === 'admin') {
+          // Admin → go to admin dashboard
+          showMessage('login-message', '✅ Welcome Admin! Redirecting to dashboard...', 'success');
+          setTimeout(() => window.location.href = 'admin.html', 800);
+        } else {
+          // Regular user → go to builder
+          showMessage('login-message', '✅ Logged in! Redirecting...', 'success');
+          setTimeout(() => window.location.href = 'index.html', 800);
+        }
+
+      } catch (err) {
+        showMessage('login-message', `❌ ${err.message}`, 'error');
+        btn.disabled    = false;
+        btn.textContent = 'Login';
+      }
+    });
+
+    // ── REGISTER ──
+    document.getElementById('register-btn').addEventListener('click', async () => {
+      const name     = document.getElementById('register-name').value.trim();
+      const email    = document.getElementById('register-email').value.trim();
+      const password = document.getElementById('register-password').value;
+      const btn      = document.getElementById('register-btn');
+
+      if (!name || !email || !password) {
+        return showMessage('register-message', '⚠️ Please fill in all fields.', 'error');
+      }
+
+      if (password.length < 6) {
+        return showMessage('register-message', '⚠️ Password must be at least 6 characters.', 'error');
+      }
+
+      btn.disabled    = true;
+      btn.textContent = 'Creating account...';
+
+      try {
+        const data = await auth.register(name, email, password);
+
+        saveAuth(data.token, data.user);
+
+        // New registrations are always 'user' role → go to builder
+        showMessage('register-message', '✅ Account created! Redirecting...', 'success');
+        setTimeout(() => window.location.href = 'index.html', 800);
+
+      } catch (err) {
+        showMessage('register-message', `❌ ${err.message}`, 'error');
+        btn.disabled    = false;
+        btn.textContent = 'Create Account';
+      }
+    });
+
+    // ── Enter key support ──
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      if (panelLogin.classList.contains('active')) {
+        document.getElementById('login-btn').click();
+      } else {
+        document.getElementById('register-btn').click();
+      }
+    });
+  </script>
+
+</body>
+</html>
