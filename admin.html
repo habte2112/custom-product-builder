@@ -164,6 +164,119 @@
     .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #333; border-top-color: #ff9900; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── Analytics ── */
+    .analytics-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .a-stat {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .a-stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .a-stat-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 34px;
+      letter-spacing: 1px;
+      color: #ff9900;
+    }
+
+    .a-stat-change {
+      font-size: 12px;
+      color: #68d391;
+      margin-top: 4px;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .chart-card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .chart-card.wide {
+      grid-column: 1 / -1;
+    }
+
+    .chart-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 1.5px;
+      color: #f0f0f0;
+      margin-bottom: 20px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 250px;
+    }
+
+    .chart-wrap canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    /* Top products list */
+    .top-list { padding: 0; }
+
+    .top-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #222;
+    }
+
+    .top-item:last-child { border-bottom: none; }
+
+    .top-rank {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      color: #ff9900;
+      width: 30px;
+      text-align: center;
+    }
+
+    .top-info { flex: 1; }
+
+    .top-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #f0f0f0;
+    }
+
+    .top-qty {
+      font-size: 12px;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    .top-revenue {
+      font-weight: 700;
+      font-size: 14px;
+      color: #ff9900;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 1000px) { .stats { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 700px) {
@@ -173,8 +286,12 @@
       .nav-item { justify-content: center; padding: 14px; }
       .main { margin-left: 60px; padding: 16px; }
       .stats { grid-template-columns: 1fr; }
+      .analytics-stats { grid-template-columns: 1fr 1fr; }
+      .charts-grid { grid-template-columns: 1fr; }
+      .chart-card.wide { grid-column: 1; }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -205,6 +322,10 @@
       <div class="nav-item" data-sec="promo">
         <span class="icon">🎟️</span>
         <span class="label">Promo Codes</span>
+      </div>
+      <div class="nav-item" data-sec="analytics">
+        <span class="icon">📈</span>
+        <span class="label">Analytics</span>
       </div>
     </nav>
 
@@ -305,6 +426,75 @@
           <thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Description</th><th>Used</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="promo-body"><tr class="empty-row"><td colspan="7"><span class="spinner"></span>Loading...</td></tr></tbody>
         </table>
+      </div>
+    </section>
+
+    <!-- ── ANALYTICS ── -->
+    <section class="section" id="section-analytics">
+      <div class="page-header">
+        <div><h1>Analytics</h1><p>Sales &amp; performance overview</p></div>
+        <select id="analytics-range" style="background:#1a1a1a;border:1px solid #333;color:#ccc;padding:8px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;cursor:pointer;">
+          <option value="7">Last 7 Days</option>
+          <option value="30">Last 30 Days</option>
+        </select>
+      </div>
+
+      <!-- Mini stats -->
+      <div class="analytics-stats">
+        <div class="a-stat">
+          <div class="a-stat-label">Total Revenue</div>
+          <div class="a-stat-value" id="a-revenue">—</div>
+          <div class="a-stat-change" id="a-revenue-change"></div>
+        </div>
+        <div class="a-stat">
+          <div class="a-stat-label">Total Orders</div>
+          <div class="a-stat-value" id="a-orders">—</div>
+        </div>
+        <div class="a-stat">
+          <div class="a-stat-label">New Users</div>
+          <div class="a-stat-value" id="a-users">—</div>
+        </div>
+        <div class="a-stat">
+          <div class="a-stat-label">Avg Order Value</div>
+          <div class="a-stat-value" id="a-avg">—</div>
+        </div>
+      </div>
+
+      <!-- Charts grid -->
+      <div class="charts-grid">
+
+        <!-- Revenue chart -->
+        <div class="chart-card wide">
+          <h3 class="chart-title" id="revenue-chart-title">Revenue (Last 7 Days)</h3>
+          <div class="chart-wrap">
+            <canvas id="revenue-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Orders by status -->
+        <div class="chart-card">
+          <h3 class="chart-title">Orders by Status</h3>
+          <div class="chart-wrap">
+            <canvas id="status-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Top products -->
+        <div class="chart-card">
+          <h3 class="chart-title">🏆 Top Selling Products</h3>
+          <div id="top-products-list" class="top-list">
+            <div style="color:#444;text-align:center;padding:20px;">Loading...</div>
+          </div>
+        </div>
+
+        <!-- New users chart -->
+        <div class="chart-card wide">
+          <h3 class="chart-title" id="users-chart-title">New Users (Last 7 Days)</h3>
+          <div class="chart-wrap">
+            <canvas id="users-chart"></canvas>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -435,6 +625,7 @@
           case 'users':     await loadUsers();     break;
           case 'products':  await loadProducts();  break;
           case 'promo':     await loadPromo();     break;
+          case 'analytics': await loadAnalytics(); break;
         }
       } catch(err) {
         console.error(`Error loading ${sec}:`, err);
@@ -584,6 +775,184 @@
               </td>
             </tr>`).join('');
     }
+
+    // ══════════════════════════════════════════
+    // ANALYTICS
+    // ══════════════════════════════════════════
+    let revenueChart, statusChart, usersChart;
+
+    async function loadAnalytics(days) {
+      // Use the value currently selected in the dropdown if no explicit range was passed in.
+      const rangeSelect = document.getElementById('analytics-range');
+      const selectedDays = days || Number(rangeSelect.value) || 7;
+
+      try {
+        const res  = await fetch(`${API}/admin/analytics?days=${selectedDays}`, { headers: hdr() });
+        const data = await res.json();
+
+        const { last7Days, statusCounts, topProducts, newUsers } = data;
+
+        // Keep chart titles and the dropdown in sync with the range actually loaded.
+        document.getElementById('revenue-chart-title').textContent = `Revenue (Last ${selectedDays} Days)`;
+        document.getElementById('users-chart-title').textContent   = `New Users (Last ${selectedDays} Days)`;
+        rangeSelect.value = String(selectedDays);
+
+        // ── Mini stats ──
+        const totalRev = last7Days.reduce((s, d) => s + d.revenue, 0);
+        const totalOrd = last7Days.reduce((s, d) => s + d.orders,  0);
+        const totalUsr = newUsers.reduce((s, d)  => s + d.users,   0);
+        const avgOrder = totalOrd > 0 ? totalRev / totalOrd : 0;
+
+        document.getElementById('a-revenue').textContent = `$${totalRev.toFixed(0)}`;
+        document.getElementById('a-orders').textContent  = totalOrd;
+        document.getElementById('a-users').textContent   = totalUsr;
+        document.getElementById('a-avg').textContent     = `$${avgOrder.toFixed(0)}`;
+
+        const labels = last7Days.map(d => d.date);
+
+        // ── Revenue Chart ──
+        if (revenueChart) revenueChart.destroy();
+        revenueChart = new Chart(
+          document.getElementById('revenue-chart'),
+          {
+            type: 'bar',
+            data: {
+              labels,
+              datasets: [{
+                label: 'Revenue ($)',
+                data:  last7Days.map(d => d.revenue),
+                backgroundColor: 'rgba(255,153,0,0.3)',
+                borderColor:     '#ff9900',
+                borderWidth:     2,
+                borderRadius:    6,
+                hoverBackgroundColor: 'rgba(255,153,0,0.6)'
+              }]
+            },
+            options: {
+              responsive:          true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false }
+              },
+              scales: {
+                x: {
+                  ticks: { color: '#555' },
+                  grid:  { color: '#1e1e1e' }
+                },
+                y: {
+                  ticks: {
+                    color: '#555',
+                    callback: val => `$${val}`
+                  },
+                  grid: { color: '#1e1e1e' }
+                }
+              }
+            }
+          }
+        );
+
+        // ── Status Pie Chart ──
+        const statusColors = {
+          pending:   '#ff9900',
+          paid:      '#63b3ed',
+          shipped:   '#76e4f7',
+          delivered: '#68d391',
+          cancelled: '#fc8181'
+        };
+
+        if (statusChart) statusChart.destroy();
+        statusChart = new Chart(
+          document.getElementById('status-chart'),
+          {
+            type: 'doughnut',
+            data: {
+              labels:   statusCounts.map(s => s._id),
+              datasets: [{
+                data:            statusCounts.map(s => s.count),
+                backgroundColor: statusCounts.map(s => statusColors[s._id] || '#888'),
+                borderColor:     '#1a1a1a',
+                borderWidth:     3
+              }]
+            },
+            options: {
+              responsive:          true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels:   { color: '#888', padding: 16, font: { size: 12 } }
+                }
+              }
+            }
+          }
+        );
+
+        // ── Top Products ──
+        const topList = document.getElementById('top-products-list');
+        if (!topProducts || topProducts.length === 0) {
+          topList.innerHTML = '<div style="color:#444;text-align:center;padding:20px;">No orders yet</div>';
+        } else {
+          topList.innerHTML = topProducts.map((p, i) => `
+            <div class="top-item">
+              <div class="top-rank">#${i + 1}</div>
+              <div class="top-info">
+                <div class="top-name">${p.name || 'Unknown'}</div>
+                <div class="top-qty">${p.quantity} units sold</div>
+              </div>
+              <div class="top-revenue">$${p.revenue.toFixed(2)}</div>
+            </div>`).join('');
+        }
+
+        // ── New Users Chart ──
+        if (usersChart) usersChart.destroy();
+        usersChart = new Chart(
+          document.getElementById('users-chart'),
+          {
+            type: 'line',
+            data: {
+              labels: newUsers.map(d => d.date),
+              datasets: [{
+                label:           'New Users',
+                data:            newUsers.map(d => d.users),
+                borderColor:     '#68d391',
+                backgroundColor: 'rgba(104,211,145,0.1)',
+                borderWidth:     2,
+                tension:         0.4,
+                fill:            true,
+                pointBackgroundColor: '#68d391',
+                pointRadius:     4
+              }]
+            },
+            options: {
+              responsive:          true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false }
+              },
+              scales: {
+                x: {
+                  ticks: { color: '#555' },
+                  grid:  { color: '#1e1e1e' }
+                },
+                y: {
+                  ticks: { color: '#555', stepSize: 1 },
+                  grid:  { color: '#1e1e1e' }
+                }
+              }
+            }
+          }
+        );
+
+      } catch (err) {
+        console.error('Analytics error:', err);
+        toast('Failed to load analytics', 'error');
+      }
+    }
+
+    // Reload the charts whenever the user changes the "Last 7 / 30 Days" dropdown
+    document.getElementById('analytics-range').addEventListener('change', (e) => {
+      loadAnalytics(Number(e.target.value));
+    });
 
     // ══════════════════════════════════════════
     // PROMO MODAL

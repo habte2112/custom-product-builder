@@ -211,6 +211,19 @@
       margin-bottom: 6px;
     }
 
+    /* ── Rating badge ── */
+    .card-rating {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    .card-rating .stars { color: #ff9900; letter-spacing: 1px; }
+    .card-rating .rating-count { color: #666; }
+    .card-rating.no-reviews { color: #444; font-style: italic; }
+
     .card-description {
       font-size: 13px;
       color: #666;
@@ -310,6 +323,8 @@
   <script type="module">
     import { products, categories } from './scripts/products.js';
 
+    const API = 'https://custom-product-backend-production.up.railway.app/api';
+
     const searchInput  = document.getElementById('search-input');
     const searchClear  = document.getElementById('search-clear');
     const filterBar    = document.getElementById('filter-bar');
@@ -318,6 +333,36 @@
 
     let activeCategory = 'all';
     let searchQuery    = '';
+    let ratingsSummary = {}; // { productKey: { avg, count } }, filled in before first render
+
+    // ── Fetch average rating + review count for every product in one call ──
+    async function loadRatingsSummary() {
+      try {
+        const res  = await fetch(`${API}/reviews/summary`);
+        const data = await res.json();
+        ratingsSummary = data.summary || {};
+      } catch (err) {
+        console.error('Could not load ratings summary:', err);
+        ratingsSummary = {};
+      }
+    }
+
+    function starsString(avg) {
+      const rounded = Math.round(avg);
+      return '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
+    }
+
+    function ratingBadge(key) {
+      const r = ratingsSummary[key];
+      if (!r || r.count === 0) {
+        return `<div class="card-rating no-reviews">No reviews yet</div>`;
+      }
+      return `
+        <div class="card-rating">
+          <span class="stars">${starsString(r.avg)}</span>
+          <span class="rating-count">${r.avg.toFixed(1)} (${r.count})</span>
+        </div>`;
+    }
 
     // ── Build category filter buttons ──
     categories.forEach(cat => {
@@ -367,6 +412,7 @@
           <div class="card-body">
             <div class="card-category">${product.category}</div>
             <div class="card-name">${product.label}</div>
+            ${ratingBadge(key)}
             <div class="card-description">${product.description}</div>
             <div class="card-footer">
               <span class="card-price">$${product.price.toFixed(2)}</span>
@@ -415,7 +461,7 @@
     }
 
     // ── Init ──
-    renderProducts();
+    loadRatingsSummary().then(renderProducts);
   </script>
 
 </body>

@@ -382,6 +382,153 @@
 
     .btn-checkout:hover { background: #ff9900; }
 
+    /* ══════════════════════════════════════════
+       REVIEWS & RATINGS
+       ══════════════════════════════════════════ */
+    .reviews-wrap {
+      max-width: 1300px;
+      margin: 0 auto 30px;
+      padding: 0 30px;
+    }
+
+    .reviews-section {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .reviews-section h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 1.5px;
+      color: #232f3e;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .reviews-summary {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .reviews-avg-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 40px;
+      color: #232f3e;
+      letter-spacing: 1px;
+    }
+
+    .reviews-stars { color: #ff9900; font-size: 18px; letter-spacing: 2px; }
+
+    .reviews-count { color: #888; font-size: 13px; }
+
+    /* Star rating input (clickable) */
+    .star-input { display: flex; gap: 4px; cursor: pointer; }
+    .star-input .star {
+      font-size: 26px;
+      color: #ddd;
+      transition: color 0.15s, transform 0.1s;
+      user-select: none;
+    }
+    .star-input .star:hover,
+    .star-input .star.hover,
+    .star-input .star.selected { color: #ff9900; transform: scale(1.1); }
+
+    .review-form {
+      background: #f8f9fb;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 24px;
+    }
+
+    .review-form label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .review-form textarea {
+      width: 100%;
+      min-height: 70px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      resize: vertical;
+      outline: none;
+      margin-top: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .review-form textarea:focus { border-color: #ff9900; }
+
+    .review-form .button-primary { max-width: 200px; margin-top: 14px; }
+
+    .review-login-msg {
+      background: #fff8ec;
+      border: 1px solid #ffe0a3;
+      color: #8a5a00;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .review-login-msg a { color: #ff9900; font-weight: 700; text-decoration: none; }
+
+    .review-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .review-item {
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 16px;
+    }
+
+    .review-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .review-item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .review-author { font-weight: 700; font-size: 14px; color: #232f3e; }
+
+    .review-date { font-size: 12px; color: #aaa; }
+
+    .review-stars { color: #ff9900; font-size: 14px; letter-spacing: 1px; margin-bottom: 6px; }
+
+    .review-comment { font-size: 14px; color: #555; line-height: 1.5; }
+
+    .review-delete {
+      background: none;
+      border: none;
+      color: #e53e3e;
+      font-size: 12px;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 6px;
+    }
+
+    .reviews-empty {
+      color: #bbb;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 900px) {
       .builder-page { grid-template-columns: 1fr 1fr; }
@@ -391,6 +538,7 @@
     @media (max-width: 600px) {
       .builder-page { grid-template-columns: 1fr; padding: 16px; }
       header { flex-direction: column; gap: 12px; align-items: flex-start; }
+      .reviews-wrap { padding: 0 16px; }
     }
   </style>
 </head>
@@ -514,10 +662,212 @@
 
   </main>
 
+  <!-- 4️⃣ Reviews & Ratings — for whichever product is currently selected above -->
+  <div class="reviews-wrap">
+    <section class="reviews-section">
+      <h2>Ratings &amp; Reviews — <span id="reviews-product-name">—</span></h2>
+
+      <div class="reviews-summary">
+        <div class="reviews-avg-num" id="reviews-avg-num">—</div>
+        <div>
+          <div class="reviews-stars" id="reviews-avg-stars">☆☆☆☆☆</div>
+          <div class="reviews-count" id="reviews-count-text">No reviews yet</div>
+        </div>
+      </div>
+
+      <!-- Shown only to logged-in users -->
+      <div class="review-form" id="review-form" style="display:none;">
+        <label>Your Rating</label>
+        <div class="star-input" id="review-star-input">
+          <span class="star" data-value="1">☆</span>
+          <span class="star" data-value="2">☆</span>
+          <span class="star" data-value="3">☆</span>
+          <span class="star" data-value="4">☆</span>
+          <span class="star" data-value="5">☆</span>
+        </div>
+        <label style="margin-top:14px;">Your Review</label>
+        <textarea id="review-comment" placeholder="What did you think of this product?"></textarea>
+        <button class="button-primary" id="review-submit-btn">Submit Review</button>
+      </div>
+
+      <!-- Shown only to logged-out visitors -->
+      <div class="review-login-msg" id="review-login-msg" style="display:none;">
+        <a href="login.html">Log in</a> to leave a rating and review for this product.
+      </div>
+
+      <div class="review-list" id="review-list">
+        <div class="reviews-empty">Loading reviews...</div>
+      </div>
+    </section>
+  </div>
+
   <script type="module" src="scripts/builder.js"></script>
   <script type="module">
     import { setupNav } from './scripts/admin-nav.js';
     setupNav();
+  </script>
+
+  <!-- ══════════════════════════════════════════
+       REVIEWS & RATINGS LOGIC
+       ══════════════════════════════════════════ -->
+  <script type="module">
+    import { isLoggedIn, getUser } from './scripts/api.js';
+
+    const API = 'https://custom-product-backend-production.up.railway.app/api';
+
+    const productSelect     = document.getElementById('product-select');
+    const productNameEl     = document.getElementById('reviews-product-name');
+    const avgNumEl          = document.getElementById('reviews-avg-num');
+    const avgStarsEl        = document.getElementById('reviews-avg-stars');
+    const countTextEl       = document.getElementById('reviews-count-text');
+    const reviewListEl      = document.getElementById('review-list');
+    const reviewFormEl      = document.getElementById('review-form');
+    const reviewLoginMsgEl  = document.getElementById('review-login-msg');
+    const starInputEl       = document.getElementById('review-star-input');
+    const commentEl         = document.getElementById('review-comment');
+    const submitBtn         = document.getElementById('review-submit-btn');
+
+    const user = getUser();
+    let selectedRating = 0;
+    let currentProductKey = null;
+
+    function hdr() {
+      return {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      };
+    }
+
+    function starsString(avg) {
+      const rounded = Math.round(avg);
+      return '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
+    }
+
+    function fmtDate(d) {
+      return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    // ── Star input interaction ──
+    function paintStars(value) {
+      starInputEl.querySelectorAll('.star').forEach(s => {
+        const v = Number(s.dataset.value);
+        s.textContent = v <= value ? '★' : '☆';
+        s.classList.toggle('selected', v <= value);
+      });
+    }
+
+    starInputEl.querySelectorAll('.star').forEach(s => {
+      s.addEventListener('click', () => {
+        selectedRating = Number(s.dataset.value);
+        paintStars(selectedRating);
+      });
+      s.addEventListener('mouseenter', () => paintStars(Number(s.dataset.value)));
+    });
+    starInputEl.addEventListener('mouseleave', () => paintStars(selectedRating));
+
+    // ── Login gating ──
+    if (isLoggedIn() && user) {
+      reviewFormEl.style.display = 'block';
+      reviewLoginMsgEl.style.display = 'none';
+    } else {
+      reviewFormEl.style.display = 'none';
+      reviewLoginMsgEl.style.display = 'block';
+    }
+
+    // ── Load reviews for a product key ──
+    async function loadReviews(productKey) {
+      currentProductKey = productKey;
+      productNameEl.textContent = productSelect.selectedOptions[0]?.textContent || productKey;
+      reviewListEl.innerHTML = '<div class="reviews-empty">Loading reviews...</div>';
+      selectedRating = 0;
+      paintStars(0);
+      commentEl.value = '';
+
+      try {
+        const res  = await fetch(`${API}/reviews/${productKey}`);
+        const data = await res.json();
+        const { reviews, avg, count } = data;
+
+        avgNumEl.textContent   = count > 0 ? avg.toFixed(1) : '—';
+        avgStarsEl.textContent = starsString(avg);
+        countTextEl.textContent = count === 0
+          ? 'No reviews yet — be the first!'
+          : `${count} review${count !== 1 ? 's' : ''}`;
+
+        if (!reviews || reviews.length === 0) {
+          reviewListEl.innerHTML = '<div class="reviews-empty">No reviews yet — be the first!</div>';
+          return;
+        }
+
+        reviewListEl.innerHTML = reviews.map(r => `
+          <div class="review-item">
+            <div class="review-item-top">
+              <span class="review-author">${r.userName}</span>
+              <span class="review-date">${fmtDate(r.createdAt)}</span>
+            </div>
+            <div class="review-stars">${starsString(r.rating)}</div>
+            ${r.comment ? `<div class="review-comment">${r.comment}</div>` : ''}
+            ${user && (user._id === r.user || user.role === 'admin')
+              ? `<button class="review-delete" data-id="${r._id}">Delete</button>` : ''}
+          </div>
+        `).join('');
+
+        reviewListEl.querySelectorAll('.review-delete').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            if (!confirm('Delete this review?')) return;
+            try {
+              const res = await fetch(`${API}/reviews/${btn.dataset.id}`, { method: 'DELETE', headers: hdr() });
+              if (!res.ok) throw new Error((await res.json()).message);
+              loadReviews(currentProductKey);
+            } catch (err) {
+              alert(err.message);
+            }
+          });
+        });
+
+      } catch (err) {
+        console.error('Reviews error:', err);
+        reviewListEl.innerHTML = '<div class="reviews-empty">Could not load reviews.</div>';
+      }
+    }
+
+    // ── Submit a review ──
+    submitBtn.addEventListener('click', async () => {
+      if (!selectedRating) {
+        alert('Please select a star rating first.');
+        return;
+      }
+      try {
+        const res = await fetch(`${API}/reviews`, {
+          method: 'POST',
+          headers: hdr(),
+          body: JSON.stringify({
+            productKey: currentProductKey,
+            rating: selectedRating,
+            comment: commentEl.value.trim()
+          })
+        });
+        if (!res.ok) throw new Error((await res.json()).message);
+        loadReviews(currentProductKey);
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    // ── React whenever builder.js changes the selected product ──
+    productSelect.addEventListener('change', () => {
+      if (productSelect.value) loadReviews(productSelect.value);
+    });
+
+    // ── Initial load: wait briefly for builder.js to populate the dropdown ──
+    function waitForProductSelect() {
+      if (productSelect.value) {
+        loadReviews(productSelect.value);
+      } else {
+        setTimeout(waitForProductSelect, 150);
+      }
+    }
+    waitForProductSelect();
   </script>
 </body>
 </html>
