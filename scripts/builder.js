@@ -73,8 +73,9 @@ function populateProductDropdown(selectKey = null) {
 
   filtered.forEach(([key, product]) => {
     const option = document.createElement('option');
-    option.value = key;
-    option.textContent = `${product.label} — $${product.price}`;
+    option.value          = key;
+    option.textContent    = `${product.label} — $${product.price}`;
+    option.dataset.id     = product.id; // ← needed for reviews
     if (selectKey && key === selectKey) option.selected = true;
     productSelect.appendChild(option);
   });
