@@ -9,6 +9,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', sans-serif; background: #0f0f0f; color: #f0f0f0; min-height: 100vh; }
 
+    /* ── Header ── */
     header { background: #0f0f0f; border-bottom: 1px solid #2a2a2a; padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; }
     header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 2px; color: #ff9900; }
     .nav-links { display: flex; gap: 24px; align-items: center; }
@@ -17,18 +18,20 @@
     .user-badge { background: #1a1a1a; border: 1px solid #2a2a2a; padding: 6px 14px; border-radius: 20px; font-size: 13px; color: #aaa; }
     .user-badge span { color: #ff9900; font-weight: 600; }
 
+    /* ── Main ── */
     main { max-width: 900px; margin: 40px auto; padding: 0 30px; }
 
+    /* ── Top bar ── */
     .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
     .top-bar h2 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; }
     .order-count { font-size: 14px; color: #555; margin-top: 4px; }
 
-    /* Loading */
+    /* ── Loading ── */
     .loading { text-align: center; padding: 60px; color: #555; font-size: 16px; }
     .loading-spinner { width: 36px; height: 36px; border: 3px solid #2a2a2a; border-top-color: #ff9900; border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Empty */
+    /* ── Empty ── */
     .empty-state { text-align: center; padding: 80px 20px; color: #444; }
     .empty-state .empty-icon { font-size: 64px; margin-bottom: 20px; }
     .empty-state h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: #555; margin-bottom: 10px; }
@@ -36,24 +39,23 @@
     .btn-shop { display: inline-block; background: #ff9900; color: #000; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-weight: 700; font-size: 15px; transition: background 0.2s; }
     .btn-shop:hover { background: #ffb84d; }
 
-    /* Order card */
+    /* ── Order card ── */
     .order-card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; margin-bottom: 20px; overflow: hidden; transition: border-color 0.2s; }
     .order-card:hover { border-color: #3a3a3a; }
 
+    /* ── Order header ── */
     .order-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid #2a2a2a; cursor: pointer; user-select: none; transition: background 0.15s; }
     .order-header:hover { background: #1f1f1f; }
-
     .order-meta { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
     .order-id { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 1px; color: #ff9900; }
     .order-date { font-size: 13px; color: #666; }
     .order-date span { color: #888; font-weight: 600; }
-
     .order-header-right { display: flex; align-items: center; gap: 14px; }
     .order-total-preview { font-weight: 700; font-size: 16px; color: #f0f0f0; }
     .toggle-icon { color: #555; font-size: 16px; transition: transform 0.3s; }
     .order-card.expanded .toggle-icon { transform: rotate(180deg); }
 
-    /* Status badges */
+    /* ── Status badges ── */
     .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
     .status-pending   { background: rgba(255,153,0,0.12);  color: #ff9900; }
     .status-paid      { background: rgba(99,179,237,0.12); color: #63b3ed; }
@@ -61,17 +63,131 @@
     .status-delivered { background: rgba(72,187,120,0.12); color: #68d391; }
     .status-cancelled { background: rgba(229,62,62,0.12);  color: #fc8181; }
 
-    /* Order body */
+    /* ── Order body ── */
     .order-body { display: none; padding: 20px 24px; }
     .order-card.expanded .order-body { display: block; animation: slideDown 0.25s ease; }
     @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
+    /* ══════════════════════════════════════
+       ORDER TRACKING TIMELINE
+    ══════════════════════════════════════ */
+    .tracking-section { margin-bottom: 24px; }
+    .tracking-title { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #555; margin-bottom: 16px; }
+
+    .timeline {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      position: relative;
+      padding: 0 8px;
+      margin-bottom: 8px;
+    }
+
+    /* Connecting line behind steps */
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: 8%;
+      right: 8%;
+      height: 2px;
+      background: #2a2a2a;
+      z-index: 0;
+    }
+
+    .timeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      border: 2px solid #2a2a2a;
+      background: #0f0f0f;
+      transition: all 0.3s ease;
+    }
+
+    .step-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #444;
+      text-align: center;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .step-date {
+      font-size: 10px;
+      color: #333;
+      text-align: center;
+      margin-top: -4px;
+    }
+
+    /* Active step */
+    .timeline-step.done .step-circle {
+      background: #ff9900;
+      border-color: #ff9900;
+      box-shadow: 0 0 12px rgba(255,153,0,0.4);
+    }
+
+    .timeline-step.done .step-label { color: #ff9900; }
+    .timeline-step.done .step-date  { color: #888; }
+
+    /* Current/active step (pulsing) */
+    .timeline-step.current .step-circle {
+      background: #ff9900;
+      border-color: #ffb84d;
+      animation: pulse 1.5s infinite;
+      box-shadow: 0 0 16px rgba(255,153,0,0.5);
+    }
+
+    .timeline-step.current .step-label { color: #ffb84d; font-weight: 700; }
+
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(255,153,0,0.5); }
+      70%  { box-shadow: 0 0 0 8px rgba(255,153,0,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,153,0,0); }
+    }
+
+    /* Cancelled step */
+    .timeline-step.cancelled .step-circle {
+      background: rgba(229,62,62,0.1);
+      border-color: #e53e3e;
+    }
+
+    .timeline-step.cancelled .step-label { color: #fc8181; }
+
+    /* Progress line fill */
+    .timeline-progress {
+      position: absolute;
+      top: 18px;
+      left: 8%;
+      height: 2px;
+      background: #ff9900;
+      z-index: 0;
+      transition: width 0.5s ease;
+    }
+
+    /* ── Customer info ── */
     .customer-info { display: flex; gap: 24px; margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px solid #2a2a2a; flex-wrap: wrap; }
     .info-block label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #555; margin-bottom: 4px; }
     .info-block p { font-size: 14px; color: #ccc; }
 
     .section-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #555; margin-bottom: 12px; }
 
+    /* ── Order items ── */
     .order-item-row { display: flex; align-items: center; gap: 14px; padding: 10px 0; border-bottom: 1px solid #222; }
     .order-item-row:last-of-type { border-bottom: none; }
     .order-item-row img { width: 50px; height: 50px; object-fit: contain; background: #0f0f0f; border-radius: 8px; padding: 6px; border: 1px solid #2a2a2a; flex-shrink: 0; }
@@ -81,6 +197,7 @@
     .order-item-qty { font-size: 12px; color: #555; margin-top: 2px; }
     .order-item-price { font-weight: 700; font-size: 14px; color: #ff9900; }
 
+    /* ── Order totals ── */
     .order-totals { margin-top: 16px; padding-top: 14px; border-top: 1px solid #2a2a2a; }
     .totals-row { display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 8px; }
     .totals-row.discount { color: #68d391; }
@@ -90,15 +207,18 @@
     .btn-reorder { display: inline-block; margin-top: 16px; background: none; border: 1px solid #ff9900; color: #ff9900; padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; }
     .btn-reorder:hover { background: #ff9900; color: #000; }
 
-    /* Not logged in */
+    /* ── Not logged in ── */
     .login-prompt { text-align: center; padding: 80px 20px; }
     .login-prompt p { color: #555; font-size: 16px; margin-bottom: 20px; }
     .btn-login { display: inline-block; background: #ff9900; color: #000; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-weight: 700; }
 
+    /* ── Responsive ── */
     @media (max-width: 600px) {
       header { padding: 16px 20px; flex-wrap: wrap; gap: 12px; }
       main { padding: 0 16px; margin: 24px auto; }
       .order-meta { gap: 12px; }
+      .timeline::before { left: 5%; right: 5%; }
+      .step-label { font-size: 9px; }
     }
   </style>
 </head>
@@ -125,10 +245,6 @@
   </main>
 
   <script type="module">
-    import { setupNav } from './scripts/admin-nav.js';
-    setupNav();
-  </script>
-  <script type="module">
     import { isLoggedIn, getUser, logout } from './scripts/api.js';
     import { ordersAPI } from './scripts/api.js';
 
@@ -148,11 +264,9 @@
       const user = getUser();
       userBadge.innerHTML = `👤 <span>${user.name}</span>
         <a href="#" id="logout-link" style="color:#666;margin-left:10px;font-size:12px;">Logout</a>`;
-
       document.getElementById('logout-link')?.addEventListener('click', (e) => {
         e.preventDefault(); logout();
       });
-
       loadOrders();
     }
 
@@ -163,9 +277,65 @@
         + ' at ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
     }
 
-    // ── Load orders from MongoDB ──
+    function shortDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    // ══════════════════════════════════════
+    // ORDER TRACKING TIMELINE
+    // ══════════════════════════════════════
+    function buildTimeline(order) {
+      if (order.status === 'cancelled') {
+        return `
+          <div class="tracking-section">
+            <p class="tracking-title">Order Status</p>
+            <div style="text-align:center;padding:20px;color:#fc8181;font-size:15px;font-weight:600;">
+              ❌ This order was cancelled.
+            </div>
+          </div>`;
+      }
+
+      const steps = [
+        { key: 'pending',   icon: '📋', label: 'Order Placed'  },
+        { key: 'paid',      icon: '💳', label: 'Payment Confirmed' },
+        { key: 'shipped',   icon: '🚚', label: 'Shipped'       },
+        { key: 'delivered', icon: '✅', label: 'Delivered'     }
+      ];
+
+      const statusOrder = ['pending', 'paid', 'shipped', 'delivered'];
+      const currentIdx  = statusOrder.indexOf(order.status);
+
+      // Calculate progress line width
+      const progressPct = currentIdx === 0 ? 0
+        : currentIdx === 1 ? 33
+        : currentIdx === 2 ? 66
+        : 100;
+
+      const stepsHTML = steps.map((step, i) => {
+        let cls = '';
+        if (i < currentIdx)  cls = 'done';
+        if (i === currentIdx) cls = 'current';
+
+        return `
+          <div class="timeline-step ${cls}">
+            <div class="step-circle">${step.icon}</div>
+            <div class="step-label">${step.label}</div>
+            <div class="step-date">${i <= currentIdx ? shortDate(order.createdAt) : ''}</div>
+          </div>`;
+      }).join('');
+
+      return `
+        <div class="tracking-section">
+          <p class="tracking-title">📦 Order Tracking</p>
+          <div class="timeline">
+            <div class="timeline-progress" style="width:calc(${progressPct}% * 0.84)"></div>
+            ${stepsHTML}
+          </div>
+        </div>`;
+    }
+
+    // ── Load orders from backend ──
     async function loadOrders() {
-      // Show loading
       ordersList.innerHTML = `
         <div class="loading">
           <div class="loading-spinner"></div>
@@ -209,8 +379,13 @@
               <span>-$${order.discount.toFixed(2)}</span>
             </div>` : '';
 
+          // ── Build timeline ──
+          const timelineHTML = buildTimeline(order);
+
           return `
             <div class="order-card" id="order-card-${index}">
+
+              <!-- Clickable header -->
               <div class="order-header" onclick="toggleOrder(${index})">
                 <div class="order-meta">
                   <span class="order-id">Order #${String(order._id).slice(-6).toUpperCase()}</span>
@@ -222,7 +397,14 @@
                   <span class="toggle-icon">▼</span>
                 </div>
               </div>
+
+              <!-- Expandable body -->
               <div class="order-body">
+
+                <!-- ── Tracking Timeline ── -->
+                ${timelineHTML}
+
+                <!-- Customer info -->
                 <div class="customer-info">
                   <div class="info-block">
                     <label>Customer</label>
@@ -241,16 +423,22 @@
                     <p>${order.stripePaymentId ? '💳 Card' : 'Pending'}</p>
                   </div>
                 </div>
+
+                <!-- Items -->
                 <p class="section-label">Items Ordered</p>
                 ${itemsHTML}
+
+                <!-- Totals -->
                 <div class="order-totals">
                   <div class="totals-row"><span>Subtotal</span><span>$${order.subtotal.toFixed(2)}</span></div>
                   ${discountHTML}
                   <div class="totals-row"><span>Shipping</span><span>Free</span></div>
                   <div class="totals-row grand"><span>Total Paid</span><span>$${order.total.toFixed(2)}</span></div>
                 </div>
+
                 <a href="index.html" class="btn-reorder">🔄 Build Again</a>
               </div>
+
             </div>`;
         }).join('');
 
