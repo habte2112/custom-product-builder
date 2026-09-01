@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard — Custom Product Builder</title>
+  <link rel="stylesheet" href="styles/theme.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -545,6 +546,8 @@
 
   <script type="module">
     import { isLoggedIn, getUser, logout } from './scripts/api.js';
+    import { initTheme } from './scripts/theme.js';
+    initTheme('#main-nav');
 
     const API = 'https://custom-product-backend-production.up.railway.app/api';
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Catalog — Custom Product Builder</title>
+  <link rel="stylesheet" href="styles/theme.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
 
@@ -378,6 +379,8 @@
   <script type="module">
     import { products, categories } from './scripts/products.js';
     import { setupNav } from './scripts/admin-nav.js';
+    import { initTheme } from './scripts/theme.js';
+    initTheme('#main-nav');
     setupNav();
 
     const API = 'https://custom-product-backend-production.up.railway.app/api';

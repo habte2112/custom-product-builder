@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Orders — Custom Product Builder</title>
+  <link rel="stylesheet" href="styles/theme.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -247,6 +248,8 @@
   <script type="module">
     import { isLoggedIn, getUser, logout } from './scripts/api.js';
     import { ordersAPI } from './scripts/api.js';
+    import { initTheme } from './scripts/theme.js';
+    initTheme('#main-nav');
 
     const userBadge  = document.getElementById('user-badge');
     const ordersList = document.getElementById('orders-list');

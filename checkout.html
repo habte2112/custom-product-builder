@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles/theme.css">
   <title>Checkout — Custom Product Builder</title>
 
   <!-- Stripe.js — must load before your script -->
@@ -536,6 +537,8 @@
     import { products } from './scripts/products.js';
     import { isLoggedIn, getUser, logout, saveAuth } from './scripts/api.js';
     import { ordersAPI, paymentAPI } from './scripts/api.js';
+    import { initTheme } from './scripts/theme.js';
+    initTheme('#main-nav');
 
     // ── Auth check ──
     const user = getUser();

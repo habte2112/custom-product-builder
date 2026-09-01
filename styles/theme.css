@@ -1,0 +1,191 @@
+/* ════════════════════════════════════════
+   THEME CSS VARIABLES
+   Add this to every page's <head>
+   ════════════════════════════════════════ */
+
+/* ── Dark Theme (default) ── */
+:root,
+[data-theme="dark"] {
+  --bg:           #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary:  #111;
+  --border:       #2a2a2a;
+  --border-light: #1e1e1e;
+  --text:         #f0f0f0;
+  --text-muted:   #888;
+  --text-dim:     #555;
+  --text-dimmer:  #444;
+  --accent:       #ff9900;
+  --accent-hover: #ffb84d;
+  --accent-dim:   rgba(255,153,0,0.1);
+  --danger:       #e53e3e;
+  --success:      #68d391;
+  --card-shadow:  0 2px 12px rgba(0,0,0,0.3);
+  --header-bg:    #0f0f0f;
+  --input-bg:     #0f0f0f;
+}
+
+/* ── Light Theme ── */
+[data-theme="light"] {
+  --bg:           #f5f5f5;
+  --bg-secondary: #ffffff;
+  --bg-tertiary:  #f0f0f0;
+  --border:       #e0e0e0;
+  --border-light: #eeeeee;
+  --text:         #1a1a1a;
+  --text-muted:   #666;
+  --text-dim:     #888;
+  --text-dimmer:  #aaa;
+  --accent:       #ff9900;
+  --accent-hover: #e68a00;
+  --accent-dim:   rgba(255,153,0,0.1);
+  --danger:       #e53e3e;
+  --success:      #38a169;
+  --card-shadow:  0 2px 12px rgba(0,0,0,0.08);
+  --header-bg:    #232f3e;
+  --input-bg:     #ffffff;
+}
+
+/* ── Apply variables to common elements ── */
+body {
+  background:  var(--bg);
+  color:       var(--text);
+  transition:  background 0.3s ease, color 0.3s ease;
+}
+
+/* Dark pages (catalog, checkout, order-history, login, admin) */
+[data-theme="light"] body {
+  background: #f5f5f5;
+}
+
+/* Cards */
+[data-theme="light"] .product-card,
+[data-theme="light"] .order-card,
+[data-theme="light"] .panel,
+[data-theme="light"] .card,
+[data-theme="light"] .modal-box,
+[data-theme="light"] .tbl-wrap,
+[data-theme="light"] .chart-card,
+[data-theme="light"] .stat,
+[data-theme="light"] .a-stat,
+[data-theme="light"] .review-card,
+[data-theme="light"] .review-form,
+[data-theme="light"] .reviews-summary {
+  background:   #ffffff;
+  border-color: #e0e0e0;
+  color:        #1a1a1a;
+}
+
+/* Header */
+[data-theme="light"] header {
+  background:   #232f3e;
+  border-color: #1a2a3a;
+}
+
+/* Inputs */
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background:   #ffffff;
+  border-color: #ddd;
+  color:        #1a1a1a;
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] select:focus,
+[data-theme="light"] textarea:focus {
+  border-color: #ff9900;
+}
+
+/* Tables */
+[data-theme="light"] table thead tr { background: #f5f5f5; }
+[data-theme="light"] table tbody tr { border-color: #eee; }
+[data-theme="light"] table tbody tr:hover { background: #fafafa; }
+[data-theme="light"] table tbody td { color: #333; }
+[data-theme="light"] table thead th { color: #888; }
+
+/* Sidebar (admin) */
+[data-theme="light"] .sidebar {
+  background:   #ffffff;
+  border-color: #e0e0e0;
+}
+
+[data-theme="light"] .nav-item { color: #888; }
+[data-theme="light"] .nav-item:hover { background: #f5f5f5; color: #333; }
+[data-theme="light"] .nav-item.active { background: rgba(255,153,0,0.08); color: #ff9900; }
+[data-theme="light"] .logo { color: #ff9900; }
+[data-theme="light"] .logo span { color: #888; }
+
+/* Main content (admin) */
+[data-theme="light"] .main { background: #f5f5f5; }
+
+/* Filter pills */
+[data-theme="light"] .filter-btn {
+  background:   #ffffff;
+  border-color: #ddd;
+  color:        #666;
+}
+
+[data-theme="light"] .filter-btn.active {
+  background:   #ff9900;
+  border-color: #ff9900;
+  color:        #000;
+}
+
+/* Catalog search */
+[data-theme="light"] .search-wrap input {
+  background:   #ffffff;
+  border-color: #ddd;
+  color:        #1a1a1a;
+}
+
+/* Builder page panels */
+[data-theme="light"] .product-options,
+[data-theme="light"] .live-preview,
+[data-theme="light"] .cart-section,
+[data-theme="light"] .reviews-panel {
+  background:   #ffffff;
+  box-shadow:   0 2px 12px rgba(0,0,0,0.06);
+}
+
+[data-theme="light"] .reviews-panel-inner { background: #f5f5f5; }
+
+/* Cart items */
+[data-theme="light"] .cart-item { border-color: #f0f0f0; }
+[data-theme="light"] .cart-item img { background: #f8f8f8; border-color: #eee; }
+[data-theme="light"] .cart-item-name { color: #232f3e; }
+[data-theme="light"] .cart-item-variant { color: #999; }
+
+/* Order history */
+[data-theme="light"] .order-header:hover { background: #fafafa; }
+[data-theme="light"] .order-body { background: #fafafa; }
+[data-theme="light"] .customer-info { border-color: #eee; }
+[data-theme="light"] .timeline::before { background: #eee; }
+
+/* Timeline steps */
+[data-theme="light"] .step-circle {
+  background:   #f5f5f5;
+  border-color: #ddd;
+}
+
+[data-theme="light"] .step-label { color: #aaa; }
+
+/* Login page */
+[data-theme="light"] .card {
+  background:   #ffffff;
+  border-color: #e0e0e0;
+}
+
+[data-theme="light"] .tabs { background: #f5f5f5; }
+[data-theme="light"] .tab-btn { color: #888; }
+
+/* Smooth transitions for all theme changes */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.25s;
+  transition-timing-function: ease;
+}
+
+/* Don't transition transforms/animations */
+.cart-bounce, .spinner, .loading-spinner,
+.timeline-step .step-circle { transition: all 0.3s ease; }
