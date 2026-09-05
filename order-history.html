@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Orders — Custom Product Builder</title>
   <link rel="stylesheet" href="styles/theme.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ff9900">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Product Builder">
+  <link rel="apple-touch-icon" href="/images/icons/icon.svg">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -250,6 +256,8 @@
     import { ordersAPI } from './scripts/api.js';
     import { initTheme } from './scripts/theme.js';
     initTheme('#main-nav');
+    import { initPWA } from './scripts/pwa.js';
+    initPWA();
 
     const userBadge  = document.getElementById('user-badge');
     const ordersList = document.getElementById('orders-list');

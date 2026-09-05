@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Catalog — Custom Product Builder</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#ff9900">
   <link rel="stylesheet" href="styles/theme.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
@@ -35,137 +37,38 @@
     }
 
     .nav-links { display: flex; gap: 24px; align-items: center; }
-
-    .nav-links a {
-      color: #888;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-
+    .nav-links a { color: #888; text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; transition: color 0.2s; }
     .nav-links a:hover, .nav-links a.active { color: #ff9900; }
 
     /* ── Main ── */
     main { max-width: 1200px; margin: 40px auto; padding: 0 30px; }
 
     /* ── Top bar ── */
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
 
-    /* ── Wishlist toggle button ── */
+    /* ── Wishlist toggle ── */
     .btn-wishlist-toggle {
-      background: none;
-      border: 1px solid #2a2a2a;
-      color: #888;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'DM Sans', sans-serif;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      background: none; border: 1px solid #2a2a2a; color: #888;
+      padding: 8px 18px; border-radius: 20px; font-size: 13px;
+      font-weight: 600; cursor: pointer; transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 6px;
     }
-
     .btn-wishlist-toggle:hover { border-color: #ff9900; color: #ff9900; }
     .btn-wishlist-toggle.active { background: rgba(255,153,0,0.1); border-color: #ff9900; color: #ff9900; }
-
-    .wishlist-count {
-      background: #ff9900;
-      color: #000;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 1px 6px;
-      border-radius: 10px;
-      min-width: 18px;
-      text-align: center;
-    }
+    .wishlist-count { background: #ff9900; color: #000; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 10px; min-width: 18px; text-align: center; }
 
     /* ── Search bar ── */
-    .search-wrap {
-      position: relative;
-      margin-bottom: 24px;
-    }
-
-    .search-wrap input {
-      width: 100%;
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 12px;
-      padding: 16px 20px 16px 50px;
-      color: #f0f0f0;
-      font-size: 16px;
-      font-family: 'DM Sans', sans-serif;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .search-wrap input:focus {
-      border-color: #ff9900;
-      box-shadow: 0 0 0 3px rgba(255,153,0,0.1);
-    }
-
+    .search-wrap { position: relative; margin-bottom: 24px; }
+    .search-wrap input { width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 12px; padding: 16px 20px 16px 50px; color: #f0f0f0; font-size: 16px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .search-wrap input:focus { border-color: #ff9900; box-shadow: 0 0 0 3px rgba(255,153,0,0.1); }
     .search-wrap input::placeholder { color: #444; }
-
-    .search-icon {
-      position: absolute;
-      left: 18px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 18px;
-      pointer-events: none;
-    }
-
-    .search-clear {
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: #555;
-      font-size: 20px;
-      cursor: pointer;
-      display: none;
-      transition: color 0.2s;
-    }
-
+    .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 18px; pointer-events: none; }
+    .search-clear { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #555; font-size: 20px; cursor: pointer; display: none; transition: color 0.2s; }
     .search-clear:hover { color: #ff9900; }
 
     /* ── Category filters ── */
-    .filter-bar {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-
-    .filter-btn {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      color: #888;
-      padding: 8px 20px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'DM Sans', sans-serif;
-    }
-
+    .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+    .filter-btn { background: #1a1a1a; border: 1px solid #2a2a2a; color: #888; padding: 8px 20px; border-radius: 30px; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
     .filter-btn:hover { border-color: #ff9900; color: #ff9900; }
     .filter-btn.active { background: #ff9900; border-color: #ff9900; color: #000; }
 
@@ -173,161 +76,123 @@
     .results-count { font-size: 13px; color: #555; margin-bottom: 20px; }
 
     /* ── Product grid ── */
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
-    }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
 
     /* ── Product card ── */
-    .product-card {
+    .product-card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; overflow: hidden; cursor: pointer; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; position: relative; }
+    .product-card:hover { transform: translateY(-4px); border-color: #ff9900; box-shadow: 0 8px 24px rgba(255,153,0,0.15); }
+
+    /* ── Wishlist heart ── */
+    .wishlist-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border: none; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: all 0.2s; z-index: 2; backdrop-filter: blur(4px); }
+    .wishlist-btn:hover { background: rgba(255,153,0,0.3); transform: scale(1.1); }
+    .wishlist-btn.wishlisted { background: rgba(229,62,62,0.3); }
+
+    .card-image { width: 100%; height: 180px; object-fit: contain; background: #0f0f0f; padding: 20px; }
+    .card-body { padding: 16px; }
+    .card-category { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #ff9900; margin-bottom: 6px; }
+    .card-name { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; color: #f0f0f0; margin-bottom: 6px; }
+    .card-description { font-size: 13px; color: #666; line-height: 1.5; margin-bottom: 8px; }
+    .card-rating { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+    .card-stars { color: #ff9900; font-size: 13px; }
+    .card-rating-count { font-size: 12px; color: #555; }
+    .no-reviews { font-size: 12px; color: #444; }
+    .card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .card-price { font-size: 20px; font-weight: 700; color: #ff9900; }
+    .btn-customize { background: #ff9900; color: #000; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: background 0.2s; }
+    .btn-customize:hover { background: #ffb84d; }
+
+    /* ── No results ── */
+    .no-results { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #444; }
+    .no-results p:first-child { font-size: 48px; margin-bottom: 16px; }
+
+    /* ── Wishlist empty ── */
+    .wishlist-empty { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #444; }
+    .wishlist-empty .icon { font-size: 48px; margin-bottom: 16px; }
+    .wishlist-empty p { font-size: 16px; margin-bottom: 20px; }
+    .btn-browse { display: inline-block; background: #ff9900; color: #000; padding: 10px 24px; border-radius: 10px; font-weight: 700; font-size: 14px; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s; }
+    .btn-browse:hover { background: #ffb84d; }
+
+    /* ══════════════════════════════════════
+       SKELETON LOADING STYLES
+    ══════════════════════════════════════ */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 6px;
+    }
+
+    .skeleton-card {
       background: #1a1a1a;
       border: 1px solid #2a2a2a;
       border-radius: 16px;
       overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-      position: relative;
     }
 
-    .product-card:hover {
-      transform: translateY(-4px);
-      border-color: #ff9900;
-      box-shadow: 0 8px 24px rgba(255,153,0,0.15);
-    }
-
-    /* ── Wishlist heart button ── */
-    .wishlist-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.6);
-      border: none;
-      border-radius: 50%;
-      width: 34px;
-      height: 34px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 16px;
-      transition: all 0.2s;
-      z-index: 2;
-      backdrop-filter: blur(4px);
-    }
-
-    .wishlist-btn:hover { background: rgba(255,153,0,0.3); transform: scale(1.1); }
-    .wishlist-btn.wishlisted { background: rgba(229,62,62,0.3); }
-
-    .card-image {
+    .skeleton-image {
       width: 100%;
       height: 180px;
-      object-fit: contain;
-      background: #0f0f0f;
-      padding: 20px;
+      background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s infinite;
     }
 
-    .card-body { padding: 16px; }
+    .skeleton-body { padding: 16px; }
 
-    .card-category {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: #ff9900;
-      margin-bottom: 6px;
+    .skeleton-line {
+      height: 12px;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 4px;
     }
 
-    .card-name {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 20px;
-      letter-spacing: 1px;
-      color: #f0f0f0;
-      margin-bottom: 6px;
-    }
+    .skeleton-line.short  { width: 40%; }
+    .skeleton-line.medium { width: 70%; }
+    .skeleton-line.long   { width: 90%; }
+    .skeleton-line.full   { width: 100%; }
 
-    .card-description {
-      font-size: 13px;
-      color: #666;
-      line-height: 1.5;
-      margin-bottom: 8px;
-    }
-
-    /* ── Star rating on card ── */
-    .card-rating {
+    .skeleton-footer {
       display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-
-    .card-stars { color: #ff9900; font-size: 13px; }
-    .card-rating-count { font-size: 12px; color: #555; }
-    .no-reviews { font-size: 12px; color: #444; }
-
-    .card-footer {
-      display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
     }
 
-    .card-price {
-      font-size: 20px;
-      font-weight: 700;
-      color: #ff9900;
+    .skeleton-price {
+      width: 60px;
+      height: 20px;
+      background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 4px;
     }
 
-    .btn-customize {
-      background: #ff9900;
-      color: #000;
-      border: none;
-      padding: 8px 14px;
+    .skeleton-btn {
+      width: 80px;
+      height: 32px;
+      background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s infinite;
       border-radius: 8px;
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
-      transition: background 0.2s;
     }
 
-    .btn-customize:hover { background: #ffb84d; }
-
-    /* ── No results ── */
-    .no-results {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 60px 20px;
-      color: #444;
-    }
-
-    .no-results p:first-child { font-size: 48px; margin-bottom: 16px; }
-    .no-results p:last-child  { font-size: 16px; }
-
-    /* ── Wishlist empty ── */
-    .wishlist-empty {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 60px 20px;
-      color: #444;
-    }
-
-    .wishlist-empty .icon { font-size: 48px; margin-bottom: 16px; }
-    .wishlist-empty p { font-size: 16px; margin-bottom: 20px; }
-
-    .btn-browse {
+    /* ── Skeleton filter pills ── */
+    .skeleton-pill {
+      height: 34px;
+      width: 90px;
+      background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 30px;
       display: inline-block;
-      background: #ff9900;
-      color: #000;
-      padding: 10px 24px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 14px;
-      border: none;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: background 0.2s;
     }
-
-    .btn-browse:hover { background: #ffb84d; }
 
     /* ── Responsive ── */
     @media (max-width: 600px) {
@@ -352,7 +217,6 @@
     <!-- Top bar -->
     <div class="top-bar">
       <div></div>
-      <!-- Wishlist toggle -->
       <button class="btn-wishlist-toggle" id="btn-wishlist-toggle">
         ♡ Wishlist <span class="wishlist-count" id="wishlist-count">0</span>
       </button>
@@ -366,84 +230,93 @@
     </div>
 
     <!-- Category filters -->
-    <div class="filter-bar" id="filter-bar"></div>
+    <div class="filter-bar" id="filter-bar">
+      <!-- Skeleton pills while loading -->
+      <div class="skeleton-pill"></div>
+      <div class="skeleton-pill"></div>
+      <div class="skeleton-pill"></div>
+      <div class="skeleton-pill"></div>
+      <div class="skeleton-pill"></div>
+    </div>
 
     <!-- Results count -->
     <p class="results-count" id="results-count"></p>
 
-    <!-- Product grid -->
-    <div class="product-grid" id="product-grid"></div>
+    <!-- Product grid — shows skeletons first -->
+    <div class="product-grid" id="product-grid">
+      <!-- Skeleton cards shown while loading -->
+      ${Array(8).fill(`
+        <div class="skeleton-card">
+          <div class="skeleton-image"></div>
+          <div class="skeleton-body">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line long"></div>
+            <div class="skeleton-line full"></div>
+            <div class="skeleton-footer">
+              <div class="skeleton-price"></div>
+              <div class="skeleton-btn"></div>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>
 
   </main>
 
   <script type="module">
     import { products, categories } from './scripts/products.js';
-    import { setupNav } from './scripts/admin-nav.js';
+    import { setupNav }  from './scripts/admin-nav.js';
     import { initTheme } from './scripts/theme.js';
+    import { initPWA }   from './scripts/pwa.js';
+
     initTheme('#main-nav');
     setupNav();
+    initPWA();
 
     const API = 'https://custom-product-backend-production.up.railway.app/api';
 
-    const searchInput       = document.getElementById('search-input');
-    const searchClear       = document.getElementById('search-clear');
-    const filterBar         = document.getElementById('filter-bar');
-    const productGrid       = document.getElementById('product-grid');
-    const resultsCount      = document.getElementById('results-count');
-    const btnWishlistToggle = document.getElementById('btn-wishlist-toggle');
-    const wishlistCountEl   = document.getElementById('wishlist-count');
+    const searchInput        = document.getElementById('search-input');
+    const searchClear        = document.getElementById('search-clear');
+    const filterBar          = document.getElementById('filter-bar');
+    const productGrid        = document.getElementById('product-grid');
+    const resultsCount       = document.getElementById('results-count');
+    const btnWishlistToggle  = document.getElementById('btn-wishlist-toggle');
+    const wishlistCountEl    = document.getElementById('wishlist-count');
 
-    let activeCategory  = 'all';
-    let searchQuery     = '';
-    let ratingSummary   = {};
+    let activeCategory   = 'all';
+    let searchQuery      = '';
+    let ratingSummary    = {};
     let showWishlistOnly = false;
 
     // ══════════════════════════════════════
-    // WISHLIST (localStorage)
+    // WISHLIST
     // ══════════════════════════════════════
-    function getWishlist() {
-      return JSON.parse(localStorage.getItem('wishlist') || '[]');
-    }
+    function getWishlist()       { return JSON.parse(localStorage.getItem('wishlist') || '[]'); }
+    function saveWishlist(list)  { localStorage.setItem('wishlist', JSON.stringify(list)); updateWishlistCount(); }
+    function isWishlisted(key)   { return getWishlist().includes(key); }
 
-    function saveWishlist(list) {
-      localStorage.setItem('wishlist', JSON.stringify(list));
-      updateWishlistCount();
-    }
-
-    function isWishlisted(productKey) {
-      return getWishlist().includes(productKey);
-    }
-
-    function toggleWishlist(productKey) {
+    function toggleWishlist(key) {
       const list = getWishlist();
-      const idx  = list.indexOf(productKey);
-      if (idx === -1) {
-        list.push(productKey);
-      } else {
-        list.splice(idx, 1);
-      }
+      const idx  = list.indexOf(key);
+      if (idx === -1) list.push(key); else list.splice(idx, 1);
       saveWishlist(list);
-      return idx === -1; // true = added
+      return idx === -1;
     }
 
     function updateWishlistCount() {
       const count = getWishlist().length;
-      wishlistCountEl.textContent = count;
-      btnWishlistToggle.classList.toggle('active', showWishlistOnly);
+      document.getElementById('wishlist-count').textContent = count;
     }
 
-    // Toggle wishlist view
     btnWishlistToggle.addEventListener('click', () => {
       showWishlistOnly = !showWishlistOnly;
       btnWishlistToggle.classList.toggle('active', showWishlistOnly);
-      btnWishlistToggle.innerHTML = showWishlistOnly
-        ? `♥ Wishlist <span class="wishlist-count" id="wishlist-count">${getWishlist().length}</span>`
-        : `♡ Wishlist <span class="wishlist-count" id="wishlist-count">${getWishlist().length}</span>`;
+      btnWishlistToggle.innerHTML = `${showWishlistOnly ? '♥' : '♡'} Wishlist <span class="wishlist-count" id="wishlist-count">${getWishlist().length}</span>`;
       renderProducts();
     });
 
     // ══════════════════════════════════════
-    // STAR RATING HELPERS
+    // STAR RATINGS
     // ══════════════════════════════════════
     function starsString(avg) {
       const full  = Math.floor(avg);
@@ -452,20 +325,14 @@
       return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
     }
 
-    function ratingBadge(productKey) {
-      const r = ratingSummary[productKey];
-      if (!r || r.count === 0) {
-        return `<div class="card-rating"><span class="no-reviews">No reviews yet</span></div>`;
-      }
-      return `
-        <div class="card-rating">
-          <span class="card-stars">${starsString(r.avg)}</span>
-          <span class="card-rating-count">${r.avg} (${r.count})</span>
-        </div>`;
+    function ratingBadge(key) {
+      const r = ratingSummary[key];
+      if (!r || r.count === 0) return `<div class="card-rating"><span class="no-reviews">No reviews yet</span></div>`;
+      return `<div class="card-rating"><span class="card-stars">${starsString(r.avg)}</span><span class="card-rating-count">${r.avg} (${r.count})</span></div>`;
     }
 
     // ══════════════════════════════════════
-    // LOAD RATINGS SUMMARY
+    // LOAD RATINGS
     // ══════════════════════════════════════
     async function loadRatingsSummary() {
       try {
@@ -478,26 +345,29 @@
     }
 
     // ══════════════════════════════════════
-    // BUILD CATEGORY FILTER BUTTONS
+    // BUILD FILTER BUTTONS
     // ══════════════════════════════════════
-    categories.forEach(cat => {
-      const btn = document.createElement('button');
-      btn.className     = 'filter-btn' + (cat === 'all' ? ' active' : '');
-      btn.textContent   = cat === 'all' ? 'All Products' : capitalize(cat);
-      btn.dataset.category = cat;
+    function buildFilters() {
+      filterBar.innerHTML = '';
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className        = 'filter-btn' + (cat === 'all' ? ' active' : '');
+        btn.textContent      = cat === 'all' ? 'All Products' : capitalize(cat);
+        btn.dataset.category = cat;
 
-      btn.addEventListener('click', () => {
-        activeCategory = cat;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        showWishlistOnly = false;
-        btnWishlistToggle.classList.remove('active');
-        btnWishlistToggle.innerHTML = `♡ Wishlist <span class="wishlist-count" id="wishlist-count">${getWishlist().length}</span>`;
-        renderProducts();
+        btn.addEventListener('click', () => {
+          activeCategory   = cat;
+          showWishlistOnly = false;
+          btnWishlistToggle.classList.remove('active');
+          btnWishlistToggle.innerHTML = `♡ Wishlist <span class="wishlist-count" id="wishlist-count">${getWishlist().length}</span>`;
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderProducts();
+        });
+
+        filterBar.appendChild(btn);
       });
-
-      filterBar.appendChild(btn);
-    });
+    }
 
     // ══════════════════════════════════════
     // RENDER PRODUCTS
@@ -506,7 +376,6 @@
       const query    = searchQuery.toLowerCase().trim();
       const wishlist = getWishlist();
 
-      // Filter
       const filtered = Object.entries(products).filter(([key, product]) => {
         const matchesCategory = activeCategory === 'all' || product.category === activeCategory;
         const matchesSearch   = !query ||
@@ -518,18 +387,16 @@
       });
 
       // Results count
-      if (showWishlistOnly) {
-        resultsCount.textContent = `${filtered.length} wishlisted product${filtered.length !== 1 ? 's' : ''}`;
-      } else {
-        resultsCount.textContent = `${filtered.length} product${filtered.length !== 1 ? 's' : ''} found`;
-      }
+      resultsCount.textContent = showWishlistOnly
+        ? `${filtered.length} wishlisted product${filtered.length !== 1 ? 's' : ''}`
+        : `${filtered.length} product${filtered.length !== 1 ? 's' : ''} found`;
 
-      // Wishlist empty state
+      // Wishlist empty
       if (showWishlistOnly && filtered.length === 0) {
         productGrid.innerHTML = `
           <div class="wishlist-empty">
             <div class="icon">♡</div>
-            <p>Your wishlist is empty.<br>Click the ♡ on any product to save it!</p>
+            <p>Your wishlist is empty.<br>Click ♡ on any product to save it!</p>
             <button class="btn-browse" onclick="document.getElementById('btn-wishlist-toggle').click()">
               Browse Products
             </button>
@@ -552,24 +419,16 @@
         const wishlisted = wishlist.includes(key);
         return `
           <div class="product-card" data-key="${key}">
-
-            <!-- Wishlist heart button -->
-            <button class="wishlist-btn ${wishlisted ? 'wishlisted' : ''}"
-              data-key="${key}"
-              title="${wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}">
+            <button class="wishlist-btn ${wishlisted ? 'wishlisted' : ''}" data-key="${key}" title="${wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}">
               ${wishlisted ? '♥' : '♡'}
             </button>
-
-            <img class="card-image" src="${product.image}" alt="${product.label}">
-
+            <img class="card-image" src="${product.image}" alt="${product.label}"
+              onerror="this.src='images/products/backpack.jpg'">
             <div class="card-body">
               <div class="card-category">${product.category}</div>
               <div class="card-name">${product.label}</div>
               <div class="card-description">${product.description}</div>
-
-              <!-- Star rating -->
               ${ratingBadge(key)}
-
               <div class="card-footer">
                 <span class="card-price">$${product.price.toFixed(2)}</span>
                 <button class="btn-customize" data-key="${key}">Customize →</button>
@@ -578,30 +437,23 @@
           </div>`;
       }).join('');
 
-      // ── Wishlist button clicks ──
+      // Wishlist buttons
       productGrid.querySelectorAll('.wishlist-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const key   = btn.dataset.key;
           const added = toggleWishlist(key);
-
           btn.textContent = added ? '♥' : '♡';
           btn.classList.toggle('wishlisted', added);
           btn.title = added ? 'Remove from wishlist' : 'Add to wishlist';
-
-          // Small bounce animation
           btn.style.transform = 'scale(1.3)';
           setTimeout(() => btn.style.transform = '', 200);
-
-          // Update count
           document.getElementById('wishlist-count').textContent = getWishlist().length;
-
-          // If showing wishlist only and item removed — re-render
           if (showWishlistOnly && !added) renderProducts();
         });
       });
 
-      // ── Customize button → go to builder ──
+      // Customize buttons
       productGrid.querySelectorAll('.btn-customize').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -609,7 +461,7 @@
         });
       });
 
-      // ── Card click → go to builder ──
+      // Card clicks
       productGrid.querySelectorAll('.product-card').forEach(card => {
         card.addEventListener('click', () => {
           window.location.href = `index.html?product=${card.dataset.key}`;
@@ -626,19 +478,30 @@
 
     searchClear.addEventListener('click', () => {
       searchInput.value = '';
-      searchQuery = '';
+      searchQuery       = '';
       searchClear.style.display = 'none';
       searchInput.focus();
       renderProducts();
     });
 
-    function capitalize(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
+    function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+
+    // ══════════════════════════════════════
+    // INIT — show skeletons then load data
+    // ══════════════════════════════════════
+    async function init() {
+      // Skeletons are already shown in HTML
+      // Load ratings in background
+      await loadRatingsSummary();
+      // Build real filter buttons (replaces skeleton pills)
+      buildFilters();
+      // Render real products (replaces skeleton cards)
+      renderProducts();
+      // Update wishlist count
+      updateWishlistCount();
     }
 
-    // ── Init ──
-    updateWishlistCount();
-    loadRatingsSummary().then(renderProducts);
+    init();
 
   </script>
 
