@@ -3,7 +3,7 @@
 // Import this in catalog.html and index.html
 // ════════════════════════════════════════
 
-const API = 'https://custom-product-backend-production.up.railway.app/api';
+const API = 'https://custom-product-backend-1x5x.onrender.com/api';
 
 // ── Render star rating HTML ──
 export function renderStars(rating, interactive = false, size = '20px') {
