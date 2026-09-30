@@ -22,7 +22,6 @@
       color: var(--text, #333);
     }
 
-    /* ── Header ── */
     header {
       background: #232f3e;
       color: white;
@@ -50,10 +49,8 @@
       transition: color 0.2s;
     }
 
-    .nav-links a:hover,
-    .nav-links a.active { color: #ff9900; }
+    .nav-links a:hover, .nav-links a.active { color: #ff9900; }
 
-    /* ── Floating cart ── */
     .floating-cart {
       position: fixed;
       top: 20px;
@@ -84,7 +81,6 @@
       100% { transform: scale(1); }
     }
 
-    /* ── Main grid ── */
     .builder-page {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -94,7 +90,6 @@
       margin: auto;
     }
 
-    /* ── Panels ── */
     .product-options,
     .live-preview,
     .cart-section {
@@ -117,7 +112,6 @@
       border-bottom: 2px solid var(--border, #f0f0f0);
     }
 
-    /* ── Option groups ── */
     .option-group { margin-bottom: 16px; }
 
     .option-group > label {
@@ -130,7 +124,6 @@
       margin-bottom: 8px;
     }
 
-    /* ── Search ── */
     .search-wrap-builder { position: relative; }
 
     .search-wrap-builder input {
@@ -168,7 +161,6 @@
 
     .search-clear-btn:hover { color: #ff9900; }
 
-    /* ── Filter pills ── */
     .filter-pills { display: flex; flex-wrap: wrap; gap: 6px; }
 
     .pill {
@@ -187,7 +179,6 @@
     .pill:hover { border-color: #ff9900; color: #ff9900; }
     .pill.active { background: #ff9900; border-color: #ff9900; color: #fff; }
 
-    /* ── Dropdowns ── */
     select {
       width: 100%;
       padding: 9px 12px;
@@ -206,7 +197,6 @@
 
     .no-results-msg { color: #e53e3e; font-size: 13px; margin-top: 6px; }
 
-    /* ── Checkboxes ── */
     .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
 
     .checkbox-group div {
@@ -218,13 +208,11 @@
     }
 
     .checkbox-group input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
+      width: 16px; height: 16px;
       accent-color: #ff9900;
       cursor: pointer;
     }
 
-    /* ── Add to cart button ── */
     .button-primary {
       width: 100%;
       background: #ff9900;
@@ -243,7 +231,6 @@
     .button-primary:hover { background: #e68a00; transform: translateY(-1px); }
     .button-primary.added { background: #38a169; transform: scale(1.03); }
 
-    /* ── Live preview ── */
     .product-preview { text-align: center; }
 
     #preview-image {
@@ -276,7 +263,6 @@
     .product-rating { margin-top: 10px; font-size: 14px; color: var(--text-muted, #888); }
     .product-rating .stars { color: #ff9900; font-size: 16px; }
 
-    /* ── Cart items ── */
     .cart-items { margin-top: 4px; }
 
     .cart-item {
@@ -299,7 +285,6 @@
 
     .cart-item-name { font-weight: 700; font-size: 13px; color: var(--text, #232f3e); }
     .cart-item-variant { font-size: 12px; color: var(--text-muted, #999); text-transform: capitalize; margin: 2px 0 6px; }
-
     .cart-item-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
 
     .cart-item-controls button {
@@ -329,7 +314,6 @@
 
     .empty-cart { text-align: center; font-size: 15px; padding: 30px; color: var(--text-dim, #bbb); }
 
-    /* ── Cart summary ── */
     .cart-summary {
       margin-top: 16px;
       padding-top: 12px;
@@ -341,7 +325,6 @@
     .cart-summary p { margin-bottom: 6px; }
     .cart-summary span { font-weight: 700; color: var(--text, #232f3e); }
 
-    /* ── Checkout button ── */
     .btn-checkout {
       display: block;
       width: 100%;
@@ -360,7 +343,6 @@
 
     .btn-checkout:hover { background: #ff9900; }
 
-    /* ── Reviews Panel ── */
     .reviews-panel {
       background: var(--bg-secondary, white);
       padding: 24px;
@@ -387,7 +369,6 @@
       padding: 24px;
     }
 
-    /* ── Responsive ── */
     @media (max-width: 900px) {
       .builder-page { grid-template-columns: 1fr 1fr; }
       .cart-section  { grid-column: 1 / -1; }
@@ -402,25 +383,21 @@
 </head>
 <body>
 
-  <!-- Floating Cart -->
   <div class="floating-cart">
     🛒 Cart <span id="cart-count">0</span>
   </div>
 
-  <!-- Header -->
   <header>
     <h1>Build Your Custom Product</h1>
     <nav class="nav-links" id="main-nav">
       <a href="index.html" class="active">Builder</a>
       <a href="catalog.html">Catalog</a>
       <a href="order-history.html">Orders</a>
-      <!-- Theme toggle button added here by theme.js -->
     </nav>
   </header>
 
   <main class="builder-page">
 
-    <!-- 1️⃣ Product Options -->
     <section class="product-options">
       <h2>Choose Your Options</h2>
 
@@ -481,7 +458,6 @@
       <button id="add-to-cart-btn" class="button-primary">Add to Cart</button>
     </section>
 
-    <!-- 2️⃣ Live Preview -->
     <section class="live-preview">
       <h2>Live Preview</h2>
       <div class="product-preview">
@@ -489,13 +465,12 @@
         <div id="preview-description">Backpack — Red — Small</div>
         <div id="preview-price">$50.00</div>
         <div class="product-rating" id="preview-rating">
-          <span class="stars">★★★★★</span>
+          <span class="stars">☆☆☆☆☆</span>
           <span id="rating-text">No reviews yet</span>
         </div>
       </div>
     </section>
 
-    <!-- 3️⃣ Cart -->
     <section class="cart-section">
       <h2>Your Cart</h2>
       <div class="cart-items js-cart-items"></div>
@@ -506,7 +481,6 @@
       <a href="checkout.html" class="btn-checkout">Proceed to Checkout →</a>
     </section>
 
-    <!-- 4️⃣ Reviews -->
     <section class="reviews-panel">
       <h2>⭐ Product Reviews</h2>
       <div class="reviews-panel-inner">
@@ -521,56 +495,76 @@
   </main>
 
   <script type="module" src="scripts/builder.js"></script>
+
+  <!-- ✅ FIXED: all imports at top, get productId from products.js directly -->
   <script type="module">
     import { setupNav }    from './scripts/admin-nav.js';
     import { loadReviews } from './scripts/reviews.js';
     import { initTheme }   from './scripts/theme.js';
+    import { initPWA }     from './scripts/pwa.js';
+    import { products }    from './scripts/products.js';
 
-    // ── Init theme toggle ──
+    const API = 'https://custom-product-backend-production.up.railway.app/api';
+
+    // ── Init ──
     initTheme('#main-nav');
-
-    // ── Init nav ──
     setupNav();
-    import { initPWA } from './scripts/pwa.js';
     initPWA();
 
-    // ── Load reviews when product changes ──
     const productSelect = document.getElementById('product-select');
 
-    productSelect.addEventListener('change', updateReviews);
-
-    // Also watch for when builder.js populates the dropdown
-    const observer = new MutationObserver(() => {
-      if (productSelect.options.length > 0) updateReviews();
-    });
-    observer.observe(productSelect, { childList: true });
-
+    // ── Update reviews & rating preview ──
     async function updateReviews() {
-      const selectedKey    = productSelect.value;
+      const selectedKey = productSelect.value;
       if (!selectedKey) return;
 
-      const selectedOption = productSelect.options[productSelect.selectedIndex];
-      const productId      = selectedOption?.dataset?.id;
+      // ✅ FIX 1: Get productId from products.js directly
+      // NOT from option.dataset.id (which is set too late by builder.js)
+      const product   = products[selectedKey];
+      const productId = product?.id;
       if (!productId) return;
 
+      // Load full reviews section
       await loadReviews(productId, selectedKey, 'reviews-container');
 
-      // Update rating in preview
+      // Update rating in live preview
       try {
-        const API  = 'https://custom-product-backend-production.up.railway.app/api';
         const res  = await fetch(`${API}/reviews/${productId}`);
         const data = await res.json();
+
         const ratingText = document.getElementById('rating-text');
         const starsEl    = document.querySelector('.product-rating .stars');
-        if (data.totalReviews === 0) {
+        if (!ratingText || !starsEl) return;
+
+        // ✅ FIX 2: Check totalReviews properly (not === 0 only)
+        if (!data.totalReviews || data.totalReviews === 0) {
           ratingText.textContent = 'No reviews yet';
+          starsEl.textContent    = '☆☆☆☆☆';
           starsEl.style.color    = '#ccc';
         } else {
-          ratingText.textContent = `${data.avgRating} (${data.totalReviews} review${data.totalReviews !== 1 ? 's' : ''})`;
+          const full  = Math.round(data.avgRating);
+          starsEl.textContent    = '★'.repeat(full) + '☆'.repeat(5 - full);
           starsEl.style.color    = '#ff9900';
+          ratingText.textContent = `${data.avgRating} (${data.totalReviews} review${data.totalReviews !== 1 ? 's' : ''})`;
         }
-      } catch {}
+      } catch (err) {
+        console.error('Rating preview error:', err);
+      }
     }
+
+    // ✅ FIX 3: Listen for change event
+    productSelect.addEventListener('change', updateReviews);
+
+    // ✅ FIX 4: Wait for builder.js to populate dropdown then trigger
+    function waitForProduct() {
+      if (productSelect.options.length > 0 && productSelect.value) {
+        updateReviews();
+      } else {
+        setTimeout(waitForProduct, 150);
+      }
+    }
+
+    waitForProduct();
   </script>
 
 </body>
