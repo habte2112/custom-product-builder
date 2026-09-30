@@ -108,6 +108,8 @@
     import { initPWA } from './scripts/pwa.js';
     initPWA();
 
+    const API = 'https://custom-product-backend-1x5x.onrender.com/api';
+
     // ── If already logged in, redirect based on role ──
     if (isLoggedIn()) {
       const user = getUser();

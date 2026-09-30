@@ -1,5 +1,5 @@
 // ── Base URL — change this when you deploy ──
-const BASE_URL = 'https://custom-product-backend-production.up.railway.app/api';
+const BASE_URL = 'https://custom-product-backend-1x5x.onrender.com/api';
 
 // ── Get token from localStorage ──
 function getToken() {
