@@ -245,9 +245,7 @@ custom-product-backend/          ← Backend (Render)
 ## 📸 Screenshots
 
 
-| Builder | Catalog | Admin Dashboard |   | Orders |
-|---|---|---|
-## 📸 Screenshots
+| Builder | Catalog | Admin Dashboard | Orders |
 
 ### Builder Page
 ![Builder](screenshots/builder.png)
