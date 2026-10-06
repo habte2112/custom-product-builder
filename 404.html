@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Page Not Found | Product Builder</title>
+  <link rel="icon" href="images/icons/icon-192.png" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 2rem;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .error-code {
+      font-size: clamp(6rem, 20vw, 10rem);
+      font-weight: 900;
+      line-height: 1;
+      background: linear-gradient(135deg, #ff9900, #ff6600);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .error-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0.5rem 0 1rem;
+      color: var(--text);
+    }
+
+    .error-subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+      max-width: 400px;
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+
+    .error-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .error-links a {
+      display: inline-block;
+      padding: 0.75rem 1.8rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #ff9900;
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      background: #e68a00;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: #ff9900;
+      color: #ff9900;
+      transform: translateY(-2px);
+    }
+
+    .emoji {
+      font-size: 4rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <span class="emoji">🔍</span>
+  <div class="error-code">404</div>
+  <h1 class="error-title">Page Not Found</h1>
+  <p class="error-subtitle">
+    Looks like this page got lost in the warehouse.
+    Let's get you back to building something great.
+  </p>
+  <div class="error-links">
+    <a href="index.html" class="btn-primary">🛠 Back to Builder</a>
+    <a href="catalog.html" class="btn-secondary">🛍 Browse Catalog</a>
+  </div>
+
+  <script type="module">
+    import { getSavedTheme, applyTheme } from './scripts/theme.js';
+    applyTheme(getSavedTheme());
+  </script>
+</body>
+</html>
