@@ -152,8 +152,8 @@ Password : password123
 
 ### Test Admin Account
 ```
-Email    : admin@example.com
-Password : admin123
+Email    : demoadmin@productbuilder.com
+Password : Demo@1234
 ```
 
 ---
